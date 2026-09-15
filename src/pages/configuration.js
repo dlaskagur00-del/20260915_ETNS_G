@@ -6,6 +6,8 @@ import { getSpaceStateAt, listChanges } from "../api/history.js";
 import { assetIdForSpaceAsset } from "../api/assets.js";
 import { assetThumb } from "../components/ui/assetImage.js";
 import { spaceScene } from "../components/office/spaceScene.js";
+import { visualStage } from "../components/office/visualStage.js";
+import { OFFICE_HOTSPOTS } from "../data/officeHotspots.js";
 import { timeline } from "../components/history/timeline.js";
 import { assetDetail, changeDetail } from "../components/history/detail.js";
 import { dotDate, won } from "../lib/format.js";
@@ -124,15 +126,33 @@ export function configurationPage(state) {
     el(
       "div",
       { class: "stage-canvas" },
-      spaceScene({
-        mode: "iso",
-        spaces: sceneSpaces,
-        selectedId: space ? space.id : null,
-        maxHeight: 470,
-        onSelect: (spaceId) => selectSpace(spaceId),
-        markers: space && !timeTravel ? assetMarkers(space, assets, state.selectedAssetId) : [],
-        onMarkerSelect: (assetId) => selectAsset(assetId),
-      })
+      // 과거 시점을 보고 있을 때는 공간이 실제로 줄어드는 도식을 씁니다.
+      // 현재 상태일 때는 오피스 이미지 위에서 공간을 고릅니다.
+      timeTravel
+        ? spaceScene({
+            mode: "iso",
+            spaces: sceneSpaces,
+            selectedId: space ? space.id : null,
+            maxHeight: 470,
+            onSelect: (spaceId) => selectSpace(spaceId),
+            markers: [],
+          })
+        : visualStage({
+            assetId: "office_isometric_main",
+            hotspots: OFFICE_HOTSPOTS,
+            selectedId: space ? space.id : null,
+            maxHeight: 430,
+            onSelect: (spaceId) => selectSpace(spaceId),
+            fallback: spaceScene({
+              mode: "iso",
+              spaces: sceneSpaces,
+              selectedId: space ? space.id : null,
+              maxHeight: 470,
+              onSelect: (spaceId) => selectSpace(spaceId),
+              markers: space ? assetMarkers(space, assets, state.selectedAssetId) : [],
+              onMarkerSelect: (assetId) => selectAsset(assetId),
+            }),
+          })
     ),
     el(
       "div",

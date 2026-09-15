@@ -55,6 +55,8 @@ export const INSIGHTS = [
           },
         },
         vendorMatch: { spaceType: "meeting", keywords: ["인테리어", "공간"] },
+        currentImageId: "meeting_room_a_current",
+        proposedImageId: "meeting_room_a_proposed",
         layout: {
           boundsFrom: [{ x: 20, y: 0, w: 10, h: 9 }],
           current: [

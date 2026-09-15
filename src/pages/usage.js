@@ -8,6 +8,8 @@ import {
   getMonthlySeries, getSessions, getSessionSummary, getWeekdayPattern,
 } from "../api/usage.js";
 import { heatLegend, spaceScene } from "../components/office/spaceScene.js";
+import { visualStage } from "../components/office/visualStage.js";
+import { FLOOR_HOTSPOTS } from "../data/officeHotspots.js";
 import { lineChart } from "../components/charts/lineChart.js";
 import { barChart } from "../components/charts/barChart.js";
 import { changeImpact } from "../components/usage/changeImpact.js";
@@ -61,13 +63,21 @@ export function usagePage(state) {
     el(
       "div",
       { class: "stage-canvas" },
-      spaceScene({
-        mode: "plan",
-        spaces,
+      visualStage({
+        assetId: "floor_plan_main",
+        hotspots: FLOOR_HOTSPOTS,
         selectedId: space ? space.id : null,
         heat,
-        maxHeight: 380,
+        maxHeight: 400,
         onSelect: (spaceId) => selectSpace(spaceId),
+        fallback: spaceScene({
+          mode: "plan",
+          spaces,
+          selectedId: space ? space.id : null,
+          heat,
+          maxHeight: 380,
+          onSelect: (spaceId) => selectSpace(spaceId),
+        }),
       })
     ),
     el(
@@ -166,7 +176,7 @@ export function usagePage(state) {
                 navigate("configuration");
               },
             },
-            "이 변경의 구성 History 보기 ",
+            "이 기간의 공간 변경 확인 ",
             el("span", { class: "arrow" }, "→")
           )
         : null,

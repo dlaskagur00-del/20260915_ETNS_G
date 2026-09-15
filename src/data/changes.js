@@ -39,6 +39,8 @@ export const CHANGES = [
     vendor: "OO Interior", cost: 24600000, durationDays: 9,
     note: "인접 창고 공간 27㎡ 흡수, 유리 파티션 재시공",
     attachments: ["확장_설계도.pdf", "견적서_2023-12.pdf"],
+    beforeImageId: "meeting_room_a_2023",
+    afterImageId: "meeting_room_a_after",
     impactWindow: {
       before: ["2023-03", "2023-12"],
       after: ["2024-02", "2024-11"],
@@ -70,6 +72,8 @@ export const CHANGES = [
     vendor: "OO Electric", cost: 2400000, durationDays: 2,
     note: "조광 제어 3단 프리셋 적용",
     attachments: ["조도_측정_리포트.pdf"],
+    beforeImageId: "meeting_room_a_after",
+    afterImageId: "meeting_room_a_current",
     impactWindow: {
       before: ["2025-12", "2026-05"],
       after: ["2026-06", "2026-09"],

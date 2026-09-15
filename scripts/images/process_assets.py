@@ -18,7 +18,7 @@ import sys
 from pathlib import Path
 
 try:
-    from PIL import Image
+    from PIL import Image, ImageChops
 except ImportError:
     sys.exit(
         "Pillow가 필요합니다.\n"
@@ -45,7 +45,7 @@ MIN_WIDTH = {
     "office": 1200,
     "floorplan": 1400,
     "proposed": 1200,
-    "project": 1200,
+    "project": 800,
     "product": 800,
     "material": 800,
 }
@@ -79,6 +79,30 @@ def find_original(asset_id: str) -> Path | None:
     return None
 
 
+# 생성 이미지는 흰 여백이 넓게 남는 경우가 많습니다. 공간 이미지는 여백을 잘라내야
+# 화면에서 충분히 크게 보입니다.
+TRIM_TYPES = {"office", "floorplan", "proposed", "project"}
+
+
+def trim_whitespace(image: Image.Image, tolerance: int = 8) -> Image.Image:
+    """거의 흰색인 바깥 여백을 잘라냅니다. 여백이 없으면 원본 그대로 둡니다."""
+    rgb = image.convert("RGB")
+    background = Image.new("RGB", rgb.size, (255, 255, 255))
+    diff = ImageChops.difference(rgb, background)
+    box = diff.convert("L").point(lambda v: 255 if v > tolerance else 0).getbbox()
+    if not box:
+        return image
+
+    pad = round(min(rgb.size) * 0.015)
+    left = max(0, box[0] - pad)
+    top = max(0, box[1] - pad)
+    right = min(rgb.width, box[2] + pad)
+    bottom = min(rgb.height, box[3] + pad)
+    if (right - left) < rgb.width * 0.08 or (bottom - top) < rgb.height * 0.08:
+        return image  # 잘못 잡힌 경우 원본 유지
+    return image.crop((left, top, right, bottom))
+
+
 def to_webp(image: Image.Image, target: Path, width: int) -> tuple[int, int]:
     resized = image
     if image.width > width:
@@ -95,7 +119,7 @@ def process(check_only: bool = False) -> int:
     manifest = load_manifest()
     assets = manifest["assets"]
 
-    processed, skipped, failed = [], [], []
+    processed, skipped, failed, low_res = [], [], [], []
 
     for asset_id, entry in assets.items():
         original = find_original(asset_id)
@@ -111,13 +135,17 @@ def process(check_only: bool = False) -> int:
             failed.append((asset_id, f"지원하지 않는 형식: {original.suffix}"))
             continue
 
-        with Image.open(original) as image:
+        with Image.open(original) as raw:
+            image = trim_whitespace(raw) if entry["type"] in TRIM_TYPES else raw
             min_width = MIN_WIDTH.get(entry["type"], 800)
+            trimmed = entry["type"] in TRIM_TYPES and image.width < raw.width
             if image.width < min_width:
-                failed.append(
-                    (asset_id, f"해상도 부족: {image.width}px < 최소 {min_width}px — 확대하지 않고 건너뜁니다")
-                )
-                continue
+                if not trimmed:
+                    failed.append(
+                        (asset_id, f"해상도 부족: {image.width}px < 최소 {min_width}px — 확대하지 않고 건너뜁니다")
+                    )
+                    continue
+                low_res.append((asset_id, image.width, min_width))
 
             if check_only:
                 processed.append((asset_id, image.width, image.height))
@@ -142,6 +170,12 @@ def process(check_only: bool = False) -> int:
         print(f"  [OK]   {asset_id}  {width}x{height}")
     for asset_id, reason in failed:
         print(f"  [FAIL] {asset_id}  {reason}")
+    if low_res:
+        print("")
+        print(f"  해상도 낮음 {len(low_res)}건 — 흰 여백을 잘라낸 뒤 내용이 작습니다.")
+        print("  발표 화면에서 흐리게 보입니다. 피사체가 프레임을 채우도록 재생성을 권합니다.")
+        for asset_id, w, need in low_res:
+            print(f"    - {asset_id}: {w}px (권장 {need}px 이상)")
     if skipped:
         print(f"\n  대기 중 {len(skipped)}건 — assets/_originals/ 에 원본을 넣으면 처리됩니다.")
         for asset_id in skipped[:10]:

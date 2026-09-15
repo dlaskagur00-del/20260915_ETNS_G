@@ -2,6 +2,9 @@ import { chip, contextNote, detailRow, el } from "../../lib/dom.js";
 import { CATEGORIES } from "../../api/spaces.js";
 import { assetIdForSpaceAsset } from "../../api/assets.js";
 import { assetImage } from "../ui/assetImage.js";
+import { comparePair } from "../office/visualStage.js";
+import { getChangeImpact } from "../../api/history.js";
+import { people, pct, signed } from "../../lib/format.js";
 import { CHANGE_TYPES } from "../../api/history.js";
 import { dotDate, won } from "../../lib/format.js";
 
@@ -55,6 +58,41 @@ export function assetDetail(asset) {
   );
 }
 
+/**
+ * 변경이 실제로 어떤 결과로 이어졌는지 — 구성 History 안에서 바로 보여줍니다.
+ * 이용 History로 넘어가지 않아도 판단의 실마리가 보이도록.
+ */
+function changeImpactSummary(change) {
+  const impact = getChangeImpact(change.id);
+  if (!impact) return null;
+
+  const { before, after, delta } = impact;
+  return el(
+    "div",
+    { class: "impact-inline" },
+    el("div", { class: "impact-inline-k" }, "변경 이후 이용 데이터"),
+    el(
+      "div",
+      { class: "impact-inline-rows" },
+      el(
+        "div",
+        { class: "impact-inline-row" },
+        el("span", {}, "평균 이용 인원"),
+        el("b", {}, `${people(before.avgHeadcount)} → ${people(after.avgHeadcount)}`),
+        el("i", {}, `${signed(delta.avgHeadcount, 1)}명`)
+      ),
+      el(
+        "div",
+        { class: "impact-inline-row" },
+        el("span", {}, "이용률"),
+        el("b", {}, `${pct(before.utilization, 1)} → ${pct(after.utilization, 1)}`),
+        el("i", {}, `${signed(delta.utilization, 1)}%p`)
+      )
+    ),
+    impact.note ? el("div", { class: "impact-inline-note" }, impact.note) : null
+  );
+}
+
 /** Change event detail — before / after plus the context around the decision. */
 export function changeDetail(change, { onCompareUsage } = {}) {
   return el(
@@ -67,7 +105,22 @@ export function changeDetail(change, { onCompareUsage } = {}) {
       chip(CHANGE_TYPES[change.changeType]),
       chip(dotDate(change.changedAt))
     ),
+    change.beforeImageId || change.afterImageId
+      ? el(
+          "div",
+          { style: { marginBottom: "12px" } },
+          comparePair({
+            leftId: change.beforeImageId,
+            rightId: change.afterImageId,
+            leftLabel: "BEFORE",
+            rightLabel: "AFTER",
+            leftCaption: change.beforeValue,
+            rightCaption: change.afterValue,
+          })
+        )
+      : null,
     beforeAfter(change.beforeValue, change.afterValue),
+    changeImpactSummary(change),
     el("div", { style: { height: "12px" } }),
     detailRow("변경 일자", dotDate(change.changedAt), { mono: true }),
     detailRow("담당 업체", change.vendor),

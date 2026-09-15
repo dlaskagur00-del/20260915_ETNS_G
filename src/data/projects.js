@@ -22,6 +22,9 @@ export const PROJECTS = [
     beforeSpaces: [
       { id: "mra-before", name: "회의실 A", type: "meeting", capacity: 8, rect: { x: 20, y: 0, w: 7, h: 9 } },
     ],
+    beforeImageId: "meeting_room_a_2023",
+    afterImageId: "meeting_room_a_current",
+    thumbnailId: "vendor_project_thumbnail_01",
     relatedChangeIds: ["chg-mra-2024-01"],
     relatedInsightId: "ins-mra-capacity",
     isPublicCase: false,
@@ -42,6 +45,8 @@ export const PROJECTS = [
     beforeSpaces: [
       { id: "focusa-before", name: "미사용 공간", type: "common", capacity: 0, rect: { x: 26, y: 11, w: 8, h: 10 } },
     ],
+    afterImageId: "focus_zone_current",
+    thumbnailId: "vendor_project_thumbnail_02",
     relatedChangeIds: ["chg-focusa-2024-05"],
     relatedInsightId: "ins-focusa-demand",
     isPublicCase: true,
@@ -61,6 +66,7 @@ export const PROJECTS = [
     beforeSpaces: [
       { id: "projroom-before", name: "창고", type: "common", capacity: 0, rect: { x: 37.5, y: 11, w: 7, h: 10 } },
     ],
+    thumbnailId: "vendor_project_thumbnail_02",
     relatedChangeIds: ["chg-projroom-2025-02"],
     relatedInsightId: null,
     isPublicCase: true,
@@ -93,6 +99,8 @@ export const PROJECTS = [
     scope: ["데코타일 철거", "원목 마루 시공", "주말 야간 시공"],
     result: { metric: "공간 이용률", before: 57.0, after: 63.0, unit: "%" },
     resultNote: "업무 영향 없이 주말 시공으로 완료했습니다. 동일 조건 시공 시 참고 가능한 사례입니다.",
+    afterImageId: "lounge_current",
+    thumbnailId: "vendor_project_thumbnail_01",
     relatedChangeIds: ["chg-lounge-2026-06"],
     relatedInsightId: null,
     isPublicCase: true,

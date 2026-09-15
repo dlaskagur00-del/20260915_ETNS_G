@@ -5,6 +5,8 @@ import { getOffice, getSpace, getSpaceCounts, listSpaces } from "../api/spaces.j
 import { recentChanges, CHANGE_TYPES } from "../api/history.js";
 import { getOfficeUsageSummary } from "../api/usage.js";
 import { spaceScene } from "../components/office/spaceScene.js";
+import { visualStage } from "../components/office/visualStage.js";
+import { OFFICE_HOTSPOTS } from "../data/officeHotspots.js";
 import { dotDate } from "../lib/format.js";
 
 function usageBar(name, value) {
@@ -44,15 +46,26 @@ export function dashboardPage(state) {
     el(
       "div",
       { class: "stage-canvas" },
-      spaceScene({
-        mode: "iso",
-        spaces: listSpaces(),
+      visualStage({
+        assetId: "office_isometric_main",
+        hotspots: OFFICE_HOTSPOTS,
         selectedId: state.selectedSpaceId,
-        maxHeight: 450,
+        maxHeight: 430,
         onSelect: (spaceId) => {
           selectSpace(spaceId);
           navigate("configuration");
         },
+        // 이미지가 없으면 기존 SVG 씬이 그대로 뜹니다.
+        fallback: spaceScene({
+          mode: "iso",
+          spaces: listSpaces(),
+          selectedId: state.selectedSpaceId,
+          maxHeight: 430,
+          onSelect: (spaceId) => {
+            selectSpace(spaceId);
+            navigate("configuration");
+          },
+        }),
       })
     ),
     el(

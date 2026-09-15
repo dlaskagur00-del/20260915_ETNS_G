@@ -951,3 +951,150 @@
   border: 1px solid var(--nav-line);
   padding: 0 4px;
 }
+
+/* ============ Visual Stage — 이미지 + 공간 선택 오버레이 ============ */
+.visual-stage {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  line-height: 0;
+}
+.visual-stage__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+.visual-stage__layer { position: absolute; inset: 0; }
+
+.space-hotspot {
+  position: absolute;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.12s, border-color 0.12s;
+}
+.space-hotspot:hover,
+.space-hotspot.is-selected {
+  border-color: var(--accent);
+  background: rgba(217, 91, 20, 0.12);
+}
+.space-hotspot.is-selected { border-width: 2px; }
+
+/* 히트맵 모드에서는 색이 상시 보이고, 선택만 테두리로 구분합니다 */
+.space-hotspot.is-heat { opacity: 0.55; border-color: var(--surface); }
+.space-hotspot.is-heat:hover { opacity: 0.75; border-color: var(--accent); }
+.space-hotspot.is-heat.is-selected { opacity: 0.8; border-color: var(--accent); border-width: 2px; }
+
+.space-hotspot__label {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  padding: 3px 7px;
+  background: var(--text);
+  color: #fff;
+  font-size: 11px;
+  line-height: 1.3;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.12s;
+  pointer-events: none;
+}
+.space-hotspot__label b { font-weight: 600; }
+.space-hotspot:hover .space-hotspot__label,
+.space-hotspot.is-selected .space-hotspot__label { opacity: 1; }
+
+.visual-fallback {
+  min-height: 160px;
+  display: grid;
+  place-items: center;
+  gap: 5px;
+  background: var(--surface-2);
+  border: 1px dashed var(--line-strong);
+  color: var(--text-3);
+  font-size: 12.5px;
+  line-height: 1.5;
+  padding: 16px;
+}
+
+/* ============ Before / After 이미지 비교 ============ */
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.compare-col { border: 1px solid var(--line); background: var(--surface); min-width: 0; }
+.compare-col.after { border-color: var(--accent-line); }
+.compare-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 11px;
+  border-bottom: 1px solid var(--line);
+}
+.compare-k {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.09em;
+  color: var(--text-3);
+}
+.compare-col.after .compare-k { color: var(--accent-deep); font-weight: 600; }
+.compare-c { font-size: 11.5px; color: var(--text-3); }
+.compare-media { line-height: 0; }
+.compare-media img {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  display: block;
+}
+.compare-media .visual-fallback { aspect-ratio: 3 / 2; min-height: 0; border: none; }
+
+@media (max-width: 860px) {
+  .compare-grid { grid-template-columns: 1fr; }
+}
+
+/* ============ 구성 History 안의 이용 변화 요약 ============ */
+.impact-inline {
+  margin-top: 12px;
+  border: 1px solid var(--accent-line);
+  background: var(--accent-soft);
+}
+.impact-inline-k {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+  padding: 9px 12px 6px;
+}
+.impact-inline-rows { padding: 0 12px 4px; }
+.impact-inline-row {
+  display: grid;
+  grid-template-columns: 88px 1fr auto;
+  gap: 8px;
+  align-items: baseline;
+  padding: 5px 0;
+  font-size: 12.5px;
+}
+.impact-inline-row span { color: var(--text-3); }
+.impact-inline-row b {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text);
+}
+.impact-inline-row i {
+  font-style: normal;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--text-3);
+}
+.impact-inline-note {
+  padding: 9px 12px;
+  border-top: 1px solid var(--accent-line);
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.55;
+}

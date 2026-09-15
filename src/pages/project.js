@@ -5,6 +5,9 @@ import { getSpace } from "../api/spaces.js";
 import { getProject, listProjects } from "../api/project.js";
 import { getVendor } from "../api/vendors.js";
 import { spaceScene } from "../components/office/spaceScene.js";
+import { comparePair } from "../components/office/visualStage.js";
+import { assetThumb } from "../components/ui/assetImage.js";
+import { getVisualAsset } from "../api/assets.js";
 import { dotDate, pct, signed, won } from "../lib/format.js";
 
 const FLYWHEEL = ["RECORD", "INSIGHT", "IMPROVEMENT", "PORTFOLIO"];
@@ -19,6 +22,20 @@ function deltaOf(project) {
  * app uses — and the measured result carries the comparison.
  */
 function beforeAfterScene(project) {
+  // 실제 렌더 이미지가 있으면 그것으로 비교합니다.
+  const hasImages =
+    project.afterImageId && getVisualAsset(project.afterImageId)?.status === "ready";
+  if (hasImages) {
+    return comparePair({
+      leftId: project.beforeImageId,
+      rightId: project.afterImageId,
+      leftLabel: "BEFORE",
+      rightLabel: "AFTER",
+      leftCaption: dotDate(project.startedAt),
+      rightCaption: dotDate(project.completedAt),
+    });
+  }
+
   const afterSpaces = project.spaceIds.map((id) => getSpace(id)).filter(Boolean);
   if (!afterSpaces.length) return null;
 
@@ -112,12 +129,17 @@ export function projectPage(state) {
         },
         el(
           "div",
-          {},
-          el("div", { class: "prj-title" }, project.title),
+          { style: { display: "flex", gap: "10px", alignItems: "center", minWidth: 0 } },
+          project.thumbnailId ? assetThumb(project.thumbnailId, { alt: project.title }) : null,
           el(
             "div",
-            { class: "prj-meta" },
-            `${dotDate(project.completedAt)} · ${won(project.cost)}`
+            { style: { minWidth: 0 } },
+            el("div", { class: "prj-title" }, project.title),
+            el(
+              "div",
+              { class: "prj-meta" },
+              `${dotDate(project.completedAt)} · ${won(project.cost)}`
+            )
           )
         ),
         deltaBadge(project)

@@ -138,9 +138,9 @@ export function insightPage(state) {
   const previewPanel = panel(
     {
       title: "공간 개선 Preview",
-      sub: activeProposal.layout ? "동일 시점·동일 앵글 비교" : "배치 변경 없음",
+      sub: activeProposal.currentImageId || activeProposal.layout ? "동일 공간 · 동일 앵글 비교" : "배치 변경 없음",
     },
-    proposalCompare(activeProposal.layout)
+    proposalCompare(activeProposal.layout, activeProposal)
   );
 
   const costPanel = panel(

@@ -1,5 +1,7 @@
 import { chip, el } from "../../lib/dom.js";
 import { spaceScene } from "../office/spaceScene.js";
+import { comparePair } from "../office/visualStage.js";
+import { getVisualAsset } from "../../api/assets.js";
 import { manwon, won } from "../../lib/format.js";
 
 /**
@@ -9,7 +11,44 @@ import { manwon, won } from "../../lib/format.js";
  * system, sharing one viewBox via `boundsFrom` — so the camera angle is
  * identical by construction rather than by careful image matching.
  */
-export function proposalCompare(layout) {
+export function proposalCompare(layout, images) {
+  // 실제 렌더 이미지가 있으면 그것으로 비교합니다. 없으면 배치 도식으로 떨어집니다.
+  const hasImages =
+    images?.currentImageId &&
+    getVisualAsset(images.currentImageId)?.status === "ready" &&
+    getVisualAsset(images.proposedImageId)?.status === "ready";
+
+  if (hasImages) {
+    return el(
+      "div",
+      {},
+      comparePair({
+        leftId: images.currentImageId,
+        rightId: images.proposedImageId,
+        leftLabel: "CURRENT",
+        rightLabel: "PROPOSED",
+        leftCaption: "현재 공간",
+        rightCaption: "AI 제안 공간",
+      }),
+      layout
+        ? el(
+            "div",
+            { class: "cmp-table", style: { borderTop: "1px solid var(--line)" } },
+            ...layout.comparison.map((row) =>
+              el(
+                "div",
+                { class: "cmp-row" },
+                el("div", { class: "cmp-rk" }, row.label),
+                el("div", { class: "cmp-rb" }, row.before),
+                el("div", { class: "cmp-ra-arrow" }, "→"),
+                el("div", { class: "cmp-ra" }, row.after)
+              )
+            )
+          )
+        : null
+    );
+  }
+
   if (!layout) {
     return el(
       "div",
