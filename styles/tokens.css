@@ -1,0 +1,62 @@
+:root {
+  /* Brand */
+  --accent: #d95b14;
+  --accent-deep: #a8420a;
+  --accent-soft: #fbeee5;
+  --accent-line: #f0c3a4;
+
+  /* Neutrals — warm-biased gray to sit with the orange accent */
+  --bg: #f4f3f1;
+  --surface: #ffffff;
+  --surface-2: #faf9f7;
+  --surface-3: #efedea;
+  --line: #e2dfda;
+  --line-strong: #cbc6be;
+
+  --text: #23211e;
+  --text-2: #4e4941;
+  --text-3: #7b746a;
+  --text-inv: #ffffff;
+
+  /* Status */
+  --ok: #2f6f4f;
+  --ok-soft: #e6f0ea;
+  --info: #2c5f8a;
+  --info-soft: #e4eef6;
+  --warn: #8d5e08;
+  --warn-soft: #f8efdc;
+  --danger: #a13c3c;
+
+  /* Heatmap scale — low to high utilization */
+  --heat-1: #cddcea;
+  --heat-2: #e4e3d2;
+  --heat-3: #f5d9a8;
+  --heat-4: #efa863;
+  --heat-5: #d9641f;
+
+  /* Sidebar */
+  --nav-bg: #211f1c;
+  --nav-surface: #2b2825;
+  --nav-text: #d9d4cb;
+  --nav-text-dim: #8e877c;
+  --nav-line: #383430;
+
+  /* Type */
+  /* 화면 전체가 Pretendard 한 벌을 씁니다. mono 역할도 같은 폰트를 쓰되
+     숫자만 tabular-nums로 정렬합니다 — 한글이 섞인 라벨에서 폰트가 바뀌어
+     보이던 문제를 없애기 위해서입니다. */
+  --font-sans: Pretendard, -apple-system, "Segoe UI", "Malgun Gothic", sans-serif;
+  --font-mono: Pretendard, -apple-system, "Segoe UI", "Malgun Gothic", sans-serif;
+
+  /* Geometry — enterprise, not app-like */
+  --r-sm: 2px;
+  --r-md: 3px;
+  --shadow-panel: 0 1px 2px rgba(35, 33, 30, 0.05);
+  --shadow-pop: 0 4px 16px -6px rgba(35, 33, 30, 0.22);
+
+  /* Layout */
+  --nav-w: 232px;
+  --topbar-h: 56px;
+  --contextbar-h: 52px;
+  --panel-w: 360px;
+}

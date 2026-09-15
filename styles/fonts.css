@@ -1,0 +1,58 @@
+/**
+ * Pretendard 로컬 번들.
+ *
+ * CDN에 의존하지 않으므로 발표장 네트워크가 끊겨도 화면이 그대로 유지됩니다.
+ * 화면의 모든 텍스트가 이 한 벌을 쓰며, 숫자 정렬은 별도 폰트 대신
+ * tabular-nums로 해결합니다 — 한글이 섞인 곳에서 폰트가 바뀌어 보이던
+ * 문제의 원인이 mono 폰트였기 때문입니다.
+ *
+ * Pretendard © orioncactus — SIL Open Font License 1.1
+ */
+
+@font-face {
+  font-family: "Pretendard";
+  font-style: normal;
+  font-weight: 300;
+  font-display: block;
+  src: url("../assets/fonts/Pretendard-Light.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Pretendard";
+  font-style: normal;
+  font-weight: 500;
+  font-display: block;
+  src: url("../assets/fonts/Pretendard-Medium.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Pretendard";
+  font-style: normal;
+  font-weight: 600;
+  font-display: block;
+  src: url("../assets/fonts/Pretendard-SemiBold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Pretendard";
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+  src: url("../assets/fonts/Pretendard-Bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Pretendard";
+  font-style: normal;
+  font-weight: 800;
+  font-display: block;
+  src: url("../assets/fonts/Pretendard-ExtraBold.woff2") format("woff2");
+}
+
+/*
+ * Regular(400) 파일은 없습니다. CSS 폰트 매칭 규칙상 400 요청은 자동으로
+ * Medium(500)으로 떨어집니다 — 프로젝터에서는 오히려 또렷하게 보입니다.
+ *
+ * 이 파일들은 scripts/fonts/subset_fonts.py 가 만든 서브셋입니다.
+ * 화면에 새로운 한글을 추가했다면 그 스크립트를 다시 돌려 주세요.
+ */
