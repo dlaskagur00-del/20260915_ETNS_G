@@ -67,10 +67,15 @@ function sidebar(state) {
       el("div", { class: "nav-tagline" }, "개인의 센스를", el("br"), "조직의 데이터로."),
       // 확보된 Visual Asset 진행 상황 — 빠진 이미지를 잊지 않기 위한 표시
       (() => {
-        const { ready, total } = assetProgress();
-        return total
-          ? el("div", { class: "nav-assets" }, "VISUAL ASSET ", el("b", {}, `${ready}`), ` / ${total}`)
-          : null;
+        const { ready, total, source } = assetProgress();
+        if (!total) return null;
+        const label = source === "supabase" ? "SUPABASE" : "LOCAL";
+        return el(
+          "div",
+          { class: "nav-assets" },
+          "VISUAL ASSET ", el("b", {}, `${ready}`), ` / ${total}`,
+          el("span", { class: "nav-src" }, label)
+        );
       })(),
       el("div", { class: "nav-office" }, "ETNERS OFFICE · 본사 7F"),
       el("div", { class: "demo-mark" }, "* Demo Data")

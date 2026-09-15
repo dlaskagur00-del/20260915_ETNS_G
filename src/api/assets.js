@@ -1,4 +1,4 @@
-import { allAssets, assetEntry } from "../data/visualAssets.js";
+import { allAssets, assetEntry, assetSource } from "../data/visualAssets.js";
 
 /**
  * Visual Asset 접근 계층.
@@ -36,7 +36,7 @@ export function listRequiredAssets() {
 export function assetProgress() {
   const entries = Object.values(allAssets());
   const ready = entries.filter((entry) => entry.status === "ready").length;
-  return { ready, total: entries.length };
+  return { ready, total: entries.length, source: assetSource() };
 }
 
 /**

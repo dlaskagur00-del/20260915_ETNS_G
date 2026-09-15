@@ -942,3 +942,12 @@
 .asset-frame.is-contained { background: #ffffff; }
 .asset-frame.is-contained .asset-img { object-fit: contain; }
 .asset-thumb.is-contained { object-fit: contain; background: #ffffff; }
+
+.nav-assets .nav-src {
+  float: right;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--nav-text-dim);
+  border: 1px solid var(--nav-line);
+  padding: 0 4px;
+}
