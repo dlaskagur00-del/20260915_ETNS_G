@@ -19,6 +19,7 @@ const state = {
   usageRange: "6m",
   usageAnchorDate: "2026-09-14",
   showAllHistory: false,
+  aiLensOpen: false,
 };
 
 const listeners = new Set();

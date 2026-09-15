@@ -6,6 +6,7 @@ import { getInsight, insightsFor, listInsights } from "../api/insight.js";
 import { projectsFor } from "../api/project.js";
 import { matchVendor } from "../api/vendors.js";
 import { costEstimate, proposalCompare } from "../components/insight/proposal.js";
+import { aiLens } from "../components/insight/aiLens.js";
 import { dotDate } from "../lib/format.js";
 
 const PROCESS = [
@@ -84,24 +85,45 @@ export function insightPage(state) {
     activeInsight.recommendations.find((rec) => rec.id === state.selectedProposalId) ||
     activeInsight.recommendations[0];
 
+  const lensOpen = state.aiLensOpen;
+
   const analysisPanel = panel(
     {
-      title: `${insightSpace.name} 분석`,
-      sub: `${dotDate(activeInsight.createdAt)} · ${activeInsight.type}`,
+      title: lensOpen ? `${insightSpace.name} — AI 관점` : `${insightSpace.name} 분석`,
+      sub: lensOpen
+        ? "무엇을 보고 어떻게 판단했는지, 무엇을 못 봤는지"
+        : `${dotDate(activeInsight.createdAt)} · ${activeInsight.type}`,
       actions: el(
-        "button",
-        {
-          class: "btn",
-          onClick: () => {
-            selectSpace(insightSpace.id);
-            navigate("usage");
+        "div",
+        { style: { display: "flex", gap: "7px" } },
+        el(
+          "button",
+          {
+            class: lensOpen ? "btn primary" : "btn",
+            onClick: () => setState({ aiLensOpen: !lensOpen }),
           },
-        },
-        "근거 데이터 보기 ",
-        el("span", { class: "arrow" }, "→")
+          lensOpen ? "담당자 관점으로" : "AI 관점으로 보기"
+        ),
+        !lensOpen
+          ? el(
+              "button",
+              {
+                class: "btn",
+                onClick: () => {
+                  selectSpace(insightSpace.id);
+                  navigate("usage");
+                },
+              },
+              "근거 데이터 보기 ",
+              el("span", { class: "arrow" }, "→")
+            )
+          : null
       ),
       foot: demoMark(),
     },
+    ...(lensOpen
+      ? [aiLens(activeInsight, insightSpace.name)]
+      : [
     el(
       "div",
       { class: "request-ctx" },
@@ -132,7 +154,8 @@ export function insightPage(state) {
         el("span", { class: "ev-label" }, item.label),
         el("span", { class: "ev-value" }, item.value)
       )
-    )
+    ),
+      ])
   );
 
   const proposalsPanel = panel(
