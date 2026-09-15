@@ -31,7 +31,7 @@ export function barChart({ data, highlightIndex = null }) {
       svg("text", {
         x: x + barW / 2, y: y - 5, "text-anchor": "middle",
         style: {
-          fontSize: "9.5px", fontFamily: "var(--font-mono)",
+          fontSize: "11px", fontFamily: "var(--font-mono)",
           fill: isPeak ? "var(--accent-deep)" : "var(--text-3)",
           fontWeight: isPeak ? "600" : "400",
         },
@@ -39,7 +39,7 @@ export function barChart({ data, highlightIndex = null }) {
       svg("text", {
         x: x + barW / 2, y: H - 9, "text-anchor": "middle",
         style: {
-          fontSize: "9px", fontFamily: "var(--font-mono)",
+          fontSize: "10.5px", fontFamily: "var(--font-mono)",
           fill: isPeak ? "var(--accent-deep)" : "var(--text-3)",
         },
       }, item.label),

@@ -55,8 +55,8 @@
   --shadow-pop: 0 4px 16px -6px rgba(35, 33, 30, 0.22);
 
   /* Layout */
-  --nav-w: 232px;
-  --topbar-h: 56px;
-  --contextbar-h: 52px;
-  --panel-w: 360px;
+  --nav-w: 248px;
+  --topbar-h: 60px;
+  --contextbar-h: 58px;
+  --panel-w: 392px;
 }

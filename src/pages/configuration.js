@@ -8,6 +8,8 @@ import { assetThumb } from "../components/ui/assetImage.js";
 import { spaceScene } from "../components/office/spaceScene.js";
 import { visualStage } from "../components/office/visualStage.js";
 import { OFFICE_HOTSPOTS } from "../data/officeHotspots.js";
+import { spaceDetailFor } from "../data/objectHotspots.js";
+import { getVisualAsset } from "../api/assets.js";
 import { timeline } from "../components/history/timeline.js";
 import { assetDetail, changeDetail } from "../components/history/detail.js";
 import { dotDate, won } from "../lib/format.js";
@@ -86,6 +88,12 @@ export function configurationPage(state) {
 
   const shownAssets = timeTravel ? pastState.assets : assets;
 
+  // 공간을 고르면 그 공간의 실내 이미지로 확대합니다. 이미지가 없으면
+  // 전경에 머무르고, 기존 오피스 맵이 그대로 동작합니다.
+  const detail = space && !timeTravel ? spaceDetailFor(space.id) : null;
+  const zoomed =
+    detail && getVisualAsset(detail.assetId)?.status === "ready" ? detail : null;
+
   /* ── stage ─────────────────────────────────────────────────────── */
   const stage = el(
     "section",
@@ -96,18 +104,32 @@ export function configurationPage(state) {
       el(
         "div",
         {},
-        el("h2", { style: { fontSize: "13.5px" } }, "Isometric Office"),
+        el("h2", { style: { fontSize: "15px" } }, "Isometric Office"),
         el(
           "div",
-          { style: { fontSize: "11.5px", color: "var(--text-3)" } },
-          timeTravel
+          { style: { fontSize: "13px", color: "var(--text-3)" } },
+          zoomed
+            ? `${space.name} 내부 — 테이블·의자·조명 등 물건을 클릭하면 그 물건의 이력이 열립니다.`
+            : timeTravel
             ? `${space.name} — ${dotDate(selectedChange.changedAt)} 당시의 공간 형태와 구성으로 표시하고 있습니다.`
             : space
             ? `${space.name} 선택됨 — 공간 안의 점을 클릭하면 구성 요소 상세가 열립니다.`
             : "공간을 클릭하면 해당 공간의 구성 이력을 확인할 수 있습니다."
         )
       ),
-      timeTravel
+      zoomed
+        ? el(
+            "div",
+            { class: "timetravel" },
+            el("span", { class: "tt-k" }, "확대"),
+            el("span", { class: "tt-d" }, `${space.name} · 물건을 클릭하세요`),
+            el(
+              "button",
+              { class: "btn", onClick: () => selectSpace(null) },
+              "전경으로"
+            )
+          )
+        : timeTravel
         ? el(
             "div",
             { class: "timetravel" },
@@ -126,8 +148,8 @@ export function configurationPage(state) {
     el(
       "div",
       { class: "stage-canvas" },
-      // 과거 시점을 보고 있을 때는 공간이 실제로 줄어드는 도식을 씁니다.
-      // 현재 상태일 때는 오피스 이미지 위에서 공간을 고릅니다.
+      // 보는 순서: 오피스 전경에서 공간을 고르고 → 그 공간을 확대해
+      // 물건을 고릅니다. 과거 시점일 때는 공간이 실제로 줄어드는 도식을 씁니다.
       timeTravel
         ? spaceScene({
             mode: "iso",
@@ -136,6 +158,18 @@ export function configurationPage(state) {
             maxHeight: 470,
             onSelect: (spaceId) => selectSpace(spaceId),
             markers: [],
+          })
+        : zoomed
+        ? visualStage({
+            assetId: zoomed.assetId,
+            hotspots: zoomed.objects.map((o) => ({
+              spaceId: o.assetId,
+              label: o.label,
+              x: o.x, y: o.y, w: o.w, h: o.h,
+            })),
+            selectedId: state.selectedAssetId,
+            maxHeight: 430,
+            onSelect: (assetId) => selectAsset(assetId),
           })
         : visualStage({
             assetId: "office_isometric_main",
@@ -159,7 +193,7 @@ export function configurationPage(state) {
       { class: "stage-foot" },
       el(
         "span",
-        { style: { fontSize: "11.5px", color: "var(--text-3)" } },
+        { style: { fontSize: "13px", color: "var(--text-3)" } },
         timeTravel
           ? `${SPACE_TYPES[space.type].label} · 당시 정원 ${pastState.capacity}인 · ${Math.round(pastState.rect.w * pastState.rect.h * 10) / 10}㎡ · 누적 변경 ${pastState.changeCount}건`
           : space

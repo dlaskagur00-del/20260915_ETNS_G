@@ -2,8 +2,9 @@ import { chip, contextNote, detailRow, el } from "../../lib/dom.js";
 import { CATEGORIES } from "../../api/spaces.js";
 import { assetIdForSpaceAsset } from "../../api/assets.js";
 import { assetImage } from "../ui/assetImage.js";
+import { turntable } from "../office/turntable.js";
 import { comparePair } from "../office/visualStage.js";
-import { getChangeImpact } from "../../api/history.js";
+import { changesOfAsset, getChangeImpact, CHANGE_TYPES as TYPES } from "../../api/history.js";
 import { people, pct, signed } from "../../lib/format.js";
 import { CHANGE_TYPES } from "../../api/history.js";
 import { dotDate, won } from "../../lib/format.js";
@@ -29,12 +30,14 @@ export function assetDetail(asset) {
     el(
       "div",
       { class: isMaterial ? "asset-visual is-material" : "asset-visual" },
-      assetImage(visualId, { ratio: isMaterial ? "1:1" : "4:3", alt: asset.name })
+      // 360° 프레임이 확보된 물건은 돌려볼 수 있고, 아니면 사진 한 장입니다.
+      turntable(asset.id, { label: asset.name }) ||
+        assetImage(visualId, { ratio: isMaterial ? "1:1" : "4:3", alt: asset.name })
     ),
     el(
       "div",
       { style: { display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" } },
-      el("h3", { style: { fontSize: "15px" } }, asset.name),
+      el("h3", { style: { fontSize: "16.5px" } }, asset.name),
       chip(CATEGORIES[asset.category]),
       chip(asset.status, asset.status === "사용 중" ? "ok" : "warn")
     ),
@@ -54,7 +57,44 @@ export function assetDetail(asset) {
         )
       : null,
     contextNote("교체 사유", asset.replacementReason),
-    contextNote("특이사항", asset.specialNote)
+    contextNote("특이사항", asset.specialNote),
+    assetHistory(asset)
+  );
+}
+
+/**
+ * 이 물건 하나가 거쳐온 이력.
+ *
+ * 공간 전체 타임라인과 별개로, 선택한 오브젝트만의 변천을 보여줍니다.
+ * "언제 무엇에서 무엇으로, 왜 바뀌었나"가 한 줄씩 쌓입니다.
+ */
+function assetHistory(asset) {
+  const rows = changesOfAsset(asset.id);
+  if (!rows.length) return null;
+
+  return el(
+    "div",
+    { class: "asset-history" },
+    el("div", { class: "asset-history-k" }, `이 구성 요소의 이력 ${rows.length}건`),
+    ...rows.map((change) =>
+      el(
+        "div",
+        { class: "asset-history-row" },
+        el("span", { class: "ah-date" }, dotDate(change.changedAt)),
+        el(
+          "div",
+          {},
+          el(
+            "div",
+            { class: "ah-title" },
+            change.title,
+            el("span", { class: "ah-type" }, TYPES[change.changeType])
+          ),
+          el("div", { class: "ah-flow" }, `${change.beforeValue} → ${change.afterValue}`),
+          el("div", { class: "ah-reason" }, change.reason)
+        )
+      )
+    )
   );
 }
 
@@ -101,7 +141,7 @@ export function changeDetail(change, { onCompareUsage } = {}) {
     el(
       "div",
       { style: { display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px", flexWrap: "wrap" } },
-      el("h3", { style: { fontSize: "15px" } }, change.title),
+      el("h3", { style: { fontSize: "16.5px" } }, change.title),
       chip(CHANGE_TYPES[change.changeType]),
       chip(dotDate(change.changedAt))
     ),

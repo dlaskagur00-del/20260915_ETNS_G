@@ -18,6 +18,13 @@ export function recentChanges(limit = 5) {
   return [...CHANGES].sort((a, b) => (a.changedAt < b.changedAt ? 1 : -1)).slice(0, limit);
 }
 
+/** 구성 요소 하나의 이력 — "이건 원래 무엇이었나"에 답합니다. */
+export function changesOfAsset(assetId) {
+  return CHANGES.filter((change) => change.assetId === assetId).sort((a, b) =>
+    a.changedAt < b.changedAt ? 1 : -1
+  );
+}
+
 export function changesInMonth(spaceId, periodKey) {
   return listChanges(spaceId).filter((change) => change.changedAt.slice(0, 7) === periodKey);
 }

@@ -41,10 +41,7 @@ export function visualStage({
     );
   }
 
-  const stage = el("div", {
-    class: "visual-stage",
-    style: { maxHeight: `${maxHeight}px` },
-  });
+  const stage = el("div", { class: "visual-stage" });
 
   const img = el("img", {
     class: "visual-stage__image",
@@ -92,8 +89,9 @@ export function visualStage({
     layer.append(button);
   }
 
+  img.style.maxHeight = `${maxHeight}px`;
   stage.append(img, layer);
-  return stage;
+  return el("div", { class: "visual-stage-wrap" }, stage);
 }
 
 /** 같은 공간을 두 이미지로 나란히 비교합니다. */

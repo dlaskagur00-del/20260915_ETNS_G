@@ -37,8 +37,8 @@ export function dashboardPage(state) {
       el(
         "div",
         {},
-        el("h2", { style: { fontSize: "13.5px" } }, `${office.name} · ${office.floorLabel}`),
-        el("div", { class: "sub", style: { fontSize: "11.5px", color: "var(--text-3)" } },
+        el("h2", { style: { fontSize: "15px" } }, `${office.name} · ${office.floorLabel}`),
+        el("div", { class: "sub", style: { fontSize: "13px", color: "var(--text-3)" } },
           "공간을 클릭하면 해당 공간의 구성 History로 이동합니다.")
       ),
       chip(`${counts.total} SPACES`)
@@ -71,7 +71,7 @@ export function dashboardPage(state) {
     el(
       "div",
       { class: "stage-foot" },
-      el("span", { style: { fontSize: "11.5px", color: "var(--text-3)" } },
+      el("span", { style: { fontSize: "13px", color: "var(--text-3)" } },
         "Isometric Office — 공간 구성 History 탐색용"),
       demoMark()
     )

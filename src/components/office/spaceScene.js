@@ -238,7 +238,7 @@ export function heatLegend() {
       svg("text", {
         x: index * 44 + 22, y: 22,
         "text-anchor": "middle",
-        style: { fontSize: "9px", fill: "var(--text-3)", fontFamily: "var(--font-mono)" },
+        style: { fontSize: "10.5px", fill: "var(--text-3)", fontFamily: "var(--font-mono)" },
       }, step.label),
     ])
   );

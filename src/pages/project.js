@@ -70,10 +70,10 @@ function beforeAfterScene(project) {
         { style: { padding: "8px 12px 10px", borderTop: "1px solid var(--line)" } },
         el(
           "div",
-          { style: { fontFamily: "var(--font-mono)", fontSize: "17px" } },
+          { style: { fontFamily: "var(--font-mono)", fontSize: "18.5px" } },
           pct(value, 1)
         ),
-        el("div", { style: { fontSize: "11.5px", color: "var(--text-3)" } }, project.result.metric)
+        el("div", { style: { fontSize: "13px", color: "var(--text-3)" } }, project.result.metric)
       )
     );
 

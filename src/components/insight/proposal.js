@@ -186,7 +186,7 @@ export function costEstimate(estimate, match) {
     el(
       "div",
       { class: "cost-disclaimer" },
-      "※ History 데이터를 기반으로 한 참고용 예상 비용입니다. 실제 견적이나 확정 비용이 아닙니다."
+      "※ 축적된 History로 산출한 참고 범위입니다. 실제 견적이 아니며, 최종 금액은 담당자 검토와 업체 견적으로 확정합니다."
     )
   );
 }

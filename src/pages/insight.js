@@ -8,7 +8,13 @@ import { matchVendor } from "../api/vendors.js";
 import { costEstimate, proposalCompare } from "../components/insight/proposal.js";
 import { dotDate } from "../lib/format.js";
 
-const PROCESS = ["AI 분석", "개선안 제안", "담당자 검토", "설계 방향 결정", "CAD 상세설계"];
+const PROCESS = [
+  "클라이언트 요청",
+  "축적된 기록 조회",
+  "AI 추천안",
+  "담당자 최종 선택",
+  "설계 · 시공",
+];
 
 function processStrip(activeIndex) {
   const nodes = [];
@@ -96,12 +102,27 @@ export function insightPage(state) {
       ),
       foot: demoMark(),
     },
+    el(
+      "div",
+      { class: "request-ctx" },
+      el("div", { class: "request-ctx-k" }, "클라이언트 요청"),
+      el(
+        "div",
+        { class: "request-ctx-v" },
+        `"${insightSpace.name} 쪽 회의실이 부족하다는 얘기가 계속 나옵니다. 어떻게 하는 게 좋을까요?"`
+      ),
+      el(
+        "div",
+        { class: "request-ctx-n" },
+        "이 요청에 답하기 위해 축적된 구성·이용·비용 기록을 조회했습니다."
+      )
+    ),
     el("div", { class: "ins-reason" }, activeInsight.reason),
     el("div", { style: { height: "16px" } }),
     el(
       "div",
       { class: "eyebrow", style: { marginBottom: "6px" } },
-      "분석 근거 — 축적된 History"
+      "이 추천의 근거 — 우리 조직에 쌓인 기록"
     ),
     ...activeInsight.evidence.map((item) =>
       el(
@@ -117,7 +138,7 @@ export function insightPage(state) {
   const proposalsPanel = panel(
     {
       title: "개선안",
-      sub: "AI는 확정하지 않습니다. 담당자 검토를 위한 제안입니다.",
+      sub: "축적된 기록에서 도출한 추천안입니다. 선택은 담당자가 합니다.",
       flush: true,
       foot: processStrip(2),
     },
@@ -130,7 +151,12 @@ export function insightPage(state) {
         },
         el("div", { class: "prop-title" }, rec.title),
         el("div", { class: "prop-desc" }, rec.description),
-        el("div", { class: "prop-effect" }, `기대 효과 · ${rec.expectedEffect}`)
+        el("div", { class: "prop-effect" }, `기대 효과 · ${rec.expectedEffect}`),
+        el(
+          "div",
+          { class: "prop-decide" },
+          rec.id === activeProposal.id ? "✓ 검토 중" : "이 안 검토하기"
+        )
       )
     )
   );

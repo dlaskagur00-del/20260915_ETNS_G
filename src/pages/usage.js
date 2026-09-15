@@ -51,10 +51,10 @@ export function usagePage(state) {
       el(
         "div",
         {},
-        el("h2", { style: { fontSize: "13.5px" } }, "Floor Map · Usage Heatmap"),
+        el("h2", { style: { fontSize: "15px" } }, "Floor Map · Usage Heatmap"),
         el(
           "div",
-          { style: { fontSize: "11.5px", color: "var(--text-3)" } },
+          { style: { fontSize: "13px", color: "var(--text-3)" } },
           "색이 진할수록 이용률이 높습니다. 공간을 클릭하면 우측 데이터가 바뀝니다."
         )
       ),
@@ -86,7 +86,7 @@ export function usagePage(state) {
       el(
         "div",
         { style: { display: "flex", alignItems: "center", gap: "12px" } },
-        el("span", { style: { fontSize: "11px", color: "var(--text-3)" } }, "이용률(%)"),
+        el("span", { style: { fontSize: "12.5px", color: "var(--text-3)" } }, "이용률(%)"),
         heatLegend()
       ),
       el(
