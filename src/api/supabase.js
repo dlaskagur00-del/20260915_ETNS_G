@@ -32,8 +32,8 @@ async function restGet(path) {
 /**
  * visual_assets 테이블을 매니페스트와 같은 형태로 변환해 돌려줍니다.
  *
- * 이미지 파일이 실제로 Storage에 있는지까지는 확인하지 않습니다 — 없으면
- * assetImage 컴포넌트가 Placeholder로 떨어지므로 화면이 깨지지 않습니다.
+ * width가 기록된 행만 ready로 봅니다. 파일이 아직 없는 Asset까지 ready로 두면
+ * 없는 URL을 19번 요청하게 되고, 화면에는 어차피 Placeholder가 뜹니다.
  */
 export async function fetchVisualAssets() {
   if (!supabaseEnabled()) return null;
@@ -42,8 +42,12 @@ export async function fetchVisualAssets() {
   const assets = {};
 
   for (const row of rows) {
+    // width가 비어 있으면 아직 파일이 올라오지 않은 행입니다.
+    // 이미지 파이프라인이 실제로 처리한 경우에만 크기가 채워집니다.
+    const hasFile = Boolean(row.width);
+
     assets[row.id] = {
-      status: "ready",
+      status: hasFile ? "ready" : "required",
       type: row.asset_type,
       name: row.name,
       url: storageUrl(row.storage_path),
