@@ -20,10 +20,30 @@ const MANIFEST_URL = "assets/visual-assets.json";
 let manifest = { version: 0, assets: {} };
 let source = "none";
 
+/**
+ * 이미지 파일명은 교체해도 그대로라, 한 번 접속한 브라우저가 옛 이미지를 계속
+ * 쓰는 일이 생깁니다. 저해상도 이미지를 새로 뽑고도 발표 화면이 그대로인 사고를
+ * 막기 위해, 매니페스트의 generatedAt을 URL 뒤에 붙여 캐시를 끊습니다.
+ * 절대 URL(Supabase Storage)은 서명이 깨질 수 있어 건드리지 않습니다.
+ */
+function stampVersion(loaded) {
+  const version = loaded?.generatedAt;
+  if (!version || !loaded.assets) return loaded;
+  const tag = encodeURIComponent(version);
+  const stamp = (url) =>
+    url && !/^https?:/.test(url) && !url.includes("?") ? `${url}?v=${tag}` : url;
+
+  for (const entry of Object.values(loaded.assets)) {
+    entry.url = stamp(entry.url);
+    entry.thumbnailUrl = stamp(entry.thumbnailUrl);
+  }
+  return loaded;
+}
+
 async function loadLocal() {
   const response = await fetch(MANIFEST_URL, { cache: "no-store" });
   if (!response.ok) throw new Error(`manifest ${response.status}`);
-  return await response.json();
+  return stampVersion(await response.json());
 }
 
 export async function loadVisualAssets() {

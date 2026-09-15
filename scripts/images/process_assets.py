@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from datetime import datetime
 import sys
 from pathlib import Path
 
@@ -161,6 +162,9 @@ def process(check_only: bool = False) -> int:
         processed.append((asset_id, width, height))
 
     if not check_only:
+        # 파일명은 그대로인 채 내용만 바뀌므로, 이 값이 캐시 무효화 키가 됩니다.
+        # 화면은 이미지 URL 뒤에 ?v=<generatedAt> 를 붙여 옛 이미지를 잡아두지 않습니다.
+        manifest["generatedAt"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
         MANIFEST.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
 
     ready = sum(1 for e in assets.values() if e.get("status") == "ready")
