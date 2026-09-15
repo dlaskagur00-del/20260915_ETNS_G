@@ -3,7 +3,7 @@
 Plain `http.server` lets the browser cache ES modules, so edits to src/ do not
 show up on reload. This variant sends no-store on every response.
 
-    python dev_server.py [port]
+    python scripts/dev_server.py [port]
 """
 
 import sys
@@ -11,7 +11,7 @@ from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[1]
 
 
 class NoCacheHandler(SimpleHTTPRequestHandler):
