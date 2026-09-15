@@ -74,8 +74,8 @@ export const CHANGES = [
     vendor: "OO Electric", cost: 2400000, durationDays: 2,
     note: "조광 제어 3단 프리셋 적용",
     attachments: ["조도_측정_리포트.pdf"],
-    beforeImageId: "meeting_room_a_after",
-    afterImageId: "meeting_room_a_current",
+    beforeImageId: "product_fluorescent_light_prev",
+    afterImageId: "product_led_linear_light",
     impactWindow: {
       before: ["2025-12", "2026-05"],
       after: ["2026-06", "2026-09"],

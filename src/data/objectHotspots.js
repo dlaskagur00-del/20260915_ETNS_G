@@ -7,13 +7,14 @@
 
 /** meeting_room_a_current.webp 기준 */
 export const MEETING_A_OBJECTS = [
-  { assetId: "mr-a-light", label: "LED 라인 조명", x: 24, y: 10, w: 52, h: 14 },
-  { assetId: "mr-a-display", label: "75인치 디스플레이", x: 40, y: 32, w: 19, h: 14 },
-  { assetId: "mr-a-wall", label: "흡음 패널 벽면", x: 10, y: 28, w: 27, h: 26 },
-  { assetId: "mr-a-partition", label: "유리 파티션", x: 78, y: 24, w: 20, h: 54 },
-  { assetId: "mr-a-table", label: "회의 테이블", x: 28, y: 55, w: 56, h: 18 },
-  { assetId: "mr-a-chair", label: "회의용 의자", x: 30, y: 73, w: 50, h: 15 },
-  { assetId: "mr-a-floor", label: "카페트 타일", x: 8, y: 88, w: 40, h: 11 },
+  { assetId: "mr-a-light", label: "LED 라인 조명", x: 20, y: 1, w: 56, h: 9 },
+  { assetId: "mr-a-display", label: "75인치 디스플레이", x: 32, y: 24, w: 30, h: 27 },
+  { assetId: "mr-a-wall", label: "흡음 패널 벽면", x: 63, y: 14, w: 13, h: 36 },
+  { assetId: "mr-a-partition", label: "유리 파티션", x: 79, y: 5, w: 20, h: 86 },
+  { assetId: "mr-a-door", label: "슬라이딩 도어", x: 1, y: 8, w: 14, h: 80 },
+  { assetId: "mr-a-table", label: "회의 테이블", x: 27, y: 57, w: 47, h: 23 },
+  { assetId: "mr-a-chair", label: "회의용 의자", x: 13, y: 71, w: 19, h: 28 },
+  { assetId: "mr-a-floor", label: "카페트 타일", x: 34, y: 91, w: 30, h: 9 },
 ];
 
 /** 공간별 확대 이미지 + 그 안의 오브젝트 */

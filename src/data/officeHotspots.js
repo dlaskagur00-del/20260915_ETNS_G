@@ -7,20 +7,20 @@
 
 /** office_isometric_main.webp 기준 */
 export const OFFICE_HOTSPOTS = [
-  { spaceId: "mr-a", label: "회의실 A", x: 36, y: 16, w: 17, h: 21 },
-  { spaceId: "od-a", label: "Open Desk A", x: 19, y: 30, w: 21, h: 28 },
-  { spaceId: "lounge", label: "라운지", x: 53, y: 21, w: 15, h: 21 },
-  { spaceId: "focus-a", label: "집중업무존", x: 64, y: 35, w: 15, h: 19 },
-  { spaceId: "reception", label: "리셉션", x: 13, y: 56, w: 17, h: 23 },
+  { spaceId: "mr-a", label: "회의실 A", x: 41, y: 8, w: 20, h: 22 },
+  { spaceId: "lounge", label: "라운지", x: 62, y: 30, w: 24, h: 24 },
+  { spaceId: "od-a", label: "Open Desk A", x: 10, y: 28, w: 26, h: 28 },
+  { spaceId: "focus-a", label: "집중업무존", x: 42, y: 52, w: 24, h: 24 },
+  { spaceId: "reception", label: "리셉션", x: 20, y: 62, w: 22, h: 26 },
 ];
 
 /** floor_plan_main.webp 기준 */
 export const FLOOR_HOTSPOTS = [
-  { spaceId: "mr-c", label: "회의실 C", x: 6, y: 8, w: 17, h: 32 },
-  { spaceId: "mr-b", label: "회의실 B", x: 24, y: 8, w: 17, h: 32 },
-  { spaceId: "mr-a", label: "회의실 A", x: 42, y: 8, w: 17, h: 32 },
-  { spaceId: "lounge", label: "라운지", x: 60, y: 8, w: 31, h: 34 },
-  { spaceId: "mr-e", label: "회의실 E", x: 6, y: 52, w: 17, h: 38 },
-  { spaceId: "od-a", label: "Open Desk A", x: 24, y: 52, w: 26, h: 38 },
-  { spaceId: "focus-a", label: "집중업무존", x: 58, y: 52, w: 33, h: 38 },
+  { spaceId: "mr-c", label: "회의실 C", x: 6, y: 6, w: 19, h: 36 },
+  { spaceId: "mr-b", label: "회의실 B", x: 27, y: 6, w: 24, h: 36 },
+  { spaceId: "mr-e", label: "회의실 E", x: 53, y: 6, w: 8, h: 36 },
+  { spaceId: "mr-a", label: "회의실 A", x: 62, y: 6, w: 30, h: 36 },
+  { spaceId: "lounge", label: "라운지", x: 6, y: 47, w: 21, h: 48 },
+  { spaceId: "od-a", label: "Open Desk A", x: 29, y: 47, w: 28, h: 48 },
+  { spaceId: "focus-a", label: "집중업무존", x: 62, y: 47, w: 30, h: 48 },
 ];
