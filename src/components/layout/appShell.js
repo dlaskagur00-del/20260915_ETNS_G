@@ -101,8 +101,7 @@ function topbar() {
     el(
       "div",
       { class: "user" },
-      el("span", {}, "사무환경팀 김담당"),
-      el("div", { class: "avatar" }, "KD")
+      el("span", {}, "사무환경팀 김담당")
     )
   );
 }

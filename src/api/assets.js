@@ -73,6 +73,13 @@ const BY_NAME = {
   "흡음 벽지": "material_acoustic_panel",
   "원목 마루": "material_wood_floor",
   "데코타일": "material_deco_tile",
+  "라운지 테이블": "product_meeting_table",
+  "유리 커튼월": "product_glass_partition",
+  "목재 루버 천장": "material_ceiling_tile",
+  "원목 마루": "material_wood_floor",
+  "집중업무 부스": "material_acoustic_panel",
+  "부스 유리 도어": "material_glass_frosted",
+  "개별 태스크 조명": "product_led_linear_light",
   "도장 마감": "material_paint_finish",
   "포인트 벽지": "material_paint_finish",
 };

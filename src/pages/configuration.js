@@ -200,12 +200,7 @@ export function configurationPage(state) {
           ? `${SPACE_TYPES[space.type].label} · 정원 ${space.capacity}인 · ${getSpaceArea(space)}㎡ · ${dotDate(space.builtAt + "-01").slice(0, 7)} 구축`
           : "공간 구성 History — 무엇이, 언제, 왜 바뀌었는가"
       ),
-      el(
-        "div",
-        { style: { display: "flex", alignItems: "center", gap: "12px" } },
-        el("span", { class: "eyebrow" }, "RECORD · 무엇이 · 언제 · 왜 바뀌었는가?"),
-        demoMark()
-      )
+      demoMark()
     )
   );
 

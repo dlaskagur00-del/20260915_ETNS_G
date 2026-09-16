@@ -18,11 +18,31 @@ export const MEETING_A_OBJECTS = [
 ];
 
 /** 공간별 확대 이미지 + 그 안의 오브젝트 */
+/** lounge_current.webp 기준 */
+export const LOUNGE_OBJECTS = [
+  { assetId: "lounge-ceiling", label: "목재 루버 천장", x: 18, y: 0, w: 78, h: 18 },
+  { assetId: "lounge-window", label: "유리 커튼월", x: 0, y: 15, w: 30, h: 44 },
+  { assetId: "lounge-plant", label: "실내 식재", x: 20, y: 30, w: 15, h: 30 },
+  { assetId: "lounge-sofa", label: "라운지 소파", x: 0, y: 56, w: 40, h: 43 },
+  { assetId: "lounge-table", label: "라운지 테이블", x: 34, y: 67, w: 25, h: 32 },
+  { assetId: "lounge-floor", label: "원목 마루", x: 60, y: 88, w: 30, h: 12 },
+];
+
+/** focus_zone_current.webp 기준 */
+export const FOCUS_A_OBJECTS = [
+  { assetId: "focus-a-light", label: "개별 태스크 조명", x: 28, y: 4, w: 24, h: 14 },
+  { assetId: "focus-a-booth", label: "집중업무 부스", x: 6, y: 10, w: 20, h: 72 },
+  { assetId: "focus-a-door", label: "부스 유리 도어", x: 40, y: 6, w: 10, h: 80 },
+  { assetId: "focus-a-desk", label: "업무용 데스크", x: 28, y: 52, w: 20, h: 12 },
+  { assetId: "focus-a-chair", label: "사무용 의자", x: 50, y: 58, w: 20, h: 32 },
+  { assetId: "focus-a-floor", label: "카페트 타일", x: 0, y: 84, w: 26, h: 16 },
+];
+
 export const SPACE_DETAIL = {
   "mr-a": { assetId: "meeting_room_a_current", objects: MEETING_A_OBJECTS },
-  lounge: { assetId: "lounge_current", objects: [] },
+  lounge: { assetId: "lounge_current", objects: LOUNGE_OBJECTS },
   "od-a": { assetId: "open_desk_a_current", objects: [] },
-  "focus-a": { assetId: "focus_zone_current", objects: [] },
+  "focus-a": { assetId: "focus_zone_current", objects: FOCUS_A_OBJECTS },
   reception: { assetId: "reception_current", objects: [] },
   rest: { assetId: "rest_area_current", objects: [] },
 };
