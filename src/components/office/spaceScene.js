@@ -232,13 +232,13 @@ export function heatLegend() {
 
   const bar = svg(
     "svg",
-    { viewBox: "0 0 220 26", style: { width: "220px", height: "26px" }, "aria-label": "이용률 범례" },
+    { viewBox: "0 0 290 32", style: { width: "290px", height: "32px" }, "aria-label": "이용률 범례" },
     ...steps.flatMap((step, index) => [
-      svg("rect", { x: index * 44, y: 0, width: 44, height: 10, fill: step.fill }),
+      svg("rect", { x: index * 58, y: 0, width: 58, height: 12, fill: step.fill }),
       svg("text", {
-        x: index * 44 + 22, y: 22,
+        x: index * 58 + 29, y: 28,
         "text-anchor": "middle",
-        style: { fontSize: "10.5px", fill: "var(--text-3)", fontFamily: "var(--font-mono)" },
+        style: { fontSize: "13px", fill: "var(--text-2)", fontFamily: "var(--font-mono)" },
       }, step.label),
     ])
   );

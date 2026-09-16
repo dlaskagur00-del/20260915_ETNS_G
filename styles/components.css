@@ -407,9 +407,9 @@
   grid-template-columns: 84px 1fr 22px 1fr 62px;
   gap: 8px;
   font-family: var(--font-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.05em;
-  color: var(--text-3);
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  color: var(--text-2);
   padding: 8px 0 4px;
 }
 .impact-legend span:first-child { grid-column: 2; text-align: center; }

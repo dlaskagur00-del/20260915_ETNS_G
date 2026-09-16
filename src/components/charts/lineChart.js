@@ -38,7 +38,7 @@ export function lineChart({
     svg("text", {
       x: PAD.left - 7, y: yAt(tick) + 3.5,
       "text-anchor": "end",
-      style: { fontSize: "10.5px", fill: "var(--text-3)", fontFamily: "var(--font-mono)" },
+      style: { fontSize: "12.5px", fill: "var(--text-3)", fontFamily: "var(--font-mono)" },
     }, String(tick)),
   ]);
 
@@ -81,12 +81,12 @@ export function lineChart({
       svg("rect", { x: x - 9, y: PAD.top - 20, width: 18, height: 14, class: "chg-flag" }),
       svg("text", {
         x, y: PAD.top - 10, "text-anchor": "middle",
-        style: { fontSize: "8.5px", fontFamily: "var(--font-mono)", fill: "#fff", pointerEvents: "none" },
+        style: { fontSize: "10.5px", fontFamily: "var(--font-mono)", fill: "#fff", pointerEvents: "none" },
       }, "변경"),
       isSelected
         ? svg("text", {
             x, y: PAD.top + innerH + 30, "text-anchor": "middle",
-            style: { fontSize: "11px", fontFamily: "var(--font-sans)", fill: "var(--accent-deep)", fontWeight: "600" },
+            style: { fontSize: "12.5px", fontFamily: "var(--font-sans)", fill: "var(--accent-deep)", fontWeight: "600" },
           }, marker.label)
         : null
     );
@@ -106,7 +106,7 @@ export function lineChart({
       ? svg("text", {
           x: xAt(index), y: yAt(point.value) - 9, "text-anchor": "middle",
           style: {
-            fontSize: "11px",
+            fontSize: "12.5px",
             fontFamily: "var(--font-mono)",
             fill: index === series.length - 1 ? "var(--accent-deep)" : "var(--text-3)",
             fontWeight: index === series.length - 1 ? "600" : "400",
@@ -119,7 +119,7 @@ export function lineChart({
     index % labelEvery === 0 || index === series.length - 1
       ? svg("text", {
           x: xAt(index), y: H - 14, "text-anchor": "middle",
-          style: { fontSize: "10.5px", fontFamily: "var(--font-mono)", fill: "var(--text-3)" },
+          style: { fontSize: "12.5px", fontFamily: "var(--font-mono)", fill: "var(--text-3)" },
         }, point.label)
       : null
   );
