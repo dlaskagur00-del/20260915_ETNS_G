@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-16T16:55:17",
+  "generatedAt": "2026-09-16T17:26:55",
   "assets": {
     "floor_plan_main": {
       "status": "ready",
@@ -394,7 +394,7 @@
       "thumbnailUrl": "assets/products/product_indoor_plant_thumb.webp",
       "alt": "실내 식재",
       "ratio": "1:1",
-      "width": 1024,
+      "width": 830,
       "height": 1024,
       "source": null,
       "sourceUrl": null,

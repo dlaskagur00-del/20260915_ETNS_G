@@ -97,6 +97,16 @@ def pad_box(box, size, pad):
     )
 
 
+def source_of(path: Path) -> Path:
+    """자를 대상의 원본. _raw 에 보관본이 있으면 그쪽을 씁니다.
+
+    이미 잘린 파일을 다시 자르면 여백이 조금씩 더 깎여 나갑니다. 항상 원본에서
+    출발해야 몇 번을 실행해도 결과가 같습니다.
+    """
+    kept = RAW / path.name
+    return kept if kept.exists() else path
+
+
 def plan(asset_ids: set[str]):
     """자산 id → (원본 경로, 자를 상자). 턴테이블은 4프레임을 묶어 같은 상자를 씁니다."""
     singles, groups = {}, {}
@@ -107,7 +117,7 @@ def plan(asset_ids: set[str]):
         if not re.match(r"^(product|material|turntable)_", path.stem):
             continue
 
-        with Image.open(path) as raw:
+        with Image.open(source_of(path)) as raw:
             image = raw.convert("RGB")
             cut = caption_cut(image)
             if cut:
@@ -155,7 +165,7 @@ def main() -> int:
     print(f"{'자산':34}{'캡션':>7}{'크기 변화':>22}")
     print("-" * 66)
     for stem, path, cut, box in tasks:
-        with Image.open(path) as raw:
+        with Image.open(source_of(path)) as raw:
             image = raw.convert("RGB")
             before = image.size
             if cut:
@@ -170,7 +180,7 @@ def main() -> int:
         if apply:
             if not (RAW / path.name).exists():
                 shutil.copy2(path, RAW / path.name)
-            cropped.save(path)
+            cropped.save(path)  # 원본은 _raw 에 그대로 남습니다
 
     print(f"\n{'적용' if apply else '미리보기'} — 대상 {changed}장")
     if not apply and changed:
