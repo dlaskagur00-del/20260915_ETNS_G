@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-16T11:21:39",
+  "generatedAt": "2026-09-16T15:01:47",
   "assets": {
     "floor_plan_main": {
       "status": "ready",
@@ -10,8 +10,8 @@
       "thumbnailUrl": "assets/floorplans/floor_plan_main_thumb.webp",
       "alt": "오피스 층 전체 건축 평면도",
       "ratio": "8:5",
-      "width": 1535,
-      "height": 1024,
+      "width": 1501,
+      "height": 983,
       "source": null,
       "sourceUrl": null,
       "license": null,
