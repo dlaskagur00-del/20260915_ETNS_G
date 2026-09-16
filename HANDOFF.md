@@ -25,6 +25,42 @@ python scripts/dev_server.py 5173
 
 ---
 
+## 0-1. 다른 환경으로 옮길 때
+
+**`git clone` 만 하면 안 됩니다.** `.gitignore` 가 `assets/_originals/` 를
+제외하고 있어서 **원본 PNG 68장(65MB)이 저장소에 없습니다.** 원본이 없으면
+이미지를 다시 자르거나 품질을 바꿀 수 없습니다. 결과물만 있고 재료가 없는
+상태가 됩니다.
+
+**폴더를 통째로 복사하세요.**
+
+```
+C:\Users\etners\Desktop\etns_vibe\OFFICE_HISTORY   ← 100MB
+```
+
+`.git` 이 안에 있어 커밋 이력과 GitHub 연결까지 따라옵니다. 새 환경에서 바로
+`git push` 가 됩니다.
+
+### 새 환경에서 설치할 것
+
+```bash
+pip install pillow numpy fonttools brotli
+```
+
+> 파이프라인은 Pillow · numpy · fontTools 를 씁니다. 이 PC 에서는 `python` 이
+> Pillow 가 없는 3.12 를 가리키므로 3.13 으로 실행해야 합니다.
+
+### 저장소에 없는 것 — 필요하면 따로 챙기세요
+
+| | 어디에 |
+|---|---|
+| 원본 PNG 68장 | `assets/_originals/` · 폴더 복사하면 따라옴 |
+| 시연 영상 mp4 | 바탕화면 |
+| 영상 원본 녹화본 | `C:\Users\etners\Videos\Captures\` · 재편집하려면 필수 |
+| 영상 편집 스크립트 | 세션 작업 폴더에만 있음 (별도 관리) |
+
+---
+
 ## 1. 이 제품이 무엇인가
 
 > **공간 구성 History** (무엇이·언제·왜 바뀌었나)
@@ -97,6 +133,7 @@ scripts/
   images/clean_product_shots.py   제품 컷에서 파일명·여백 잘라내기
   fonts/subset_fonts.py           프리텐다드 서브셋
   supabase/build_setup_sql.py     매니페스트 → setup.sql
+  supabase/stage_upload.py        Storage 에 올릴 파일을 버킷 구조대로 모음
 docs/                             원본 요청서 3종 + 이미지 요청서 V2·V3
 supabase/setup.sql                테이블 + RLS + Asset 68건 (자동 생성)
 ```
@@ -124,9 +161,33 @@ supabase/setup.sql                테이블 + RLS + Asset 68건 (자동 생성)
 1. **SQL 실행** — 대시보드 → SQL Editor → `supabase/setup.sql` 전체 붙여넣고 Run
    확인: `select count(*) from public.visual_assets;` → **68**
 2. **버킷 생성** — Storage → New bucket → 이름 `office-history-assets` → **Public 켜기**
-3. **파일 업로드** — `assets/` 아래 6개 폴더를 통째로 드래그 (136개 파일, 6.7MB)
-   `scripts/supabase/` 로 업로드용 폴더를 다시 만들 수 있습니다
+3. **파일 업로드** — 먼저 올릴 파일을 버킷 구조대로 모읍니다
+
+   ```bash
+   python scripts/supabase/stage_upload.py
+   ```
+
+   바탕화면에 `Supabase_업로드` 폴더가 생깁니다 (136개 파일, 6.6MB).
+   그 안의 **6개 폴더를 버킷 안으로 통째로 드래그**하세요.
+   폴더째 올려야 버킷 안 경로가 매니페스트와 같아집니다.
+
 4. **키 입력** — `src/data/supabaseConfig.js` 의 `url`, `anonKey`
+
+### 잘 됐는지 확인하는 법
+
+연결 후 앱을 열고 **좌측 하단 표시**를 보세요.
+
+| 표시 | 뜻 |
+|---|---|
+| `VISUAL ASSET 68 / 68` + `SUPABASE` | 성공 |
+| `VISUAL ASSET 68 / 68` + `LOCAL` | 키가 안 들어갔거나 조회 실패 → 로컬로 넘어간 상태 |
+| 숫자가 68 미만 | SQL 은 됐는데 파일이 덜 올라감 |
+| 이미지가 깨짐 | 버킷이 Public 이 아니거나 폴더 경로가 다름 |
+
+### 되돌리는 법
+
+`supabaseConfig.js` 의 `url` 을 빈 문자열로 되돌리면 즉시 로컬로 돌아옵니다.
+Supabase 쪽은 아무것도 지울 필요 없습니다.
 
 > ⚠️ **`service_role` 키는 절대 넣지 마세요.** 프런트엔드 파일이라 공개됩니다.
 > `anon` 키는 애초에 공개용이고, SQL 에 읽기 전용 RLS 를 걸어두었습니다.
