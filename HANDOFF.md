@@ -1,427 +1,322 @@
-# OFFICE HISTORY — 인수인계 문서
+# OFFICE HISTORY — 인수인계
 
-> 다른 AI 에이전트 환경에서 이 프로젝트를 이어받기 위한 문서입니다.
-> **작업을 시작하기 전에 이 문서를 끝까지 읽어주세요.** 특히 6장(이미 내린 결정)은
-> 모르고 건드리면 되돌리게 되는 내용입니다.
-
-- 최종 갱신: 2026-09-15
-- 작업 폴더: `C:\Users\etners\Desktop\etns_vibe\OFFICE_HISTORY`
-- 배포: https://20260915etnes.vercel.app
-- GitHub: https://github.com/dlaskagur00-del/20260915_ETNS_G
+> 다른 AI 에이전트나 개발자가 이 문서만 읽고 작업을 이어갈 수 있도록 쓴 문서입니다.
+> 마지막 갱신: 2026-09-17
 
 ---
 
-## 1. 이 프로젝트가 무엇인가
+## 0. 30초 요약
 
-**OFFICE HISTORY** — 사무실의 공간 변화 이력과 실제 이용 이력을 한곳에 축적하고
-**서로 연결**해서, 다음 공간 의사결정의 근거로 만드는 웹 서비스입니다.
+ETNERS 사무환경팀의 **공간 이력 관리 시스템** 프로토타입입니다. 발표·시연용이며,
+빌드 도구 없이 순수 ES 모듈로 만들어졌습니다.
 
-이트너스 인턴(임남혁)의 **발표용 인터랙티브 프로토타입**입니다. 실제 서비스가 아니라
-발표에서 직접 클릭하며 시연하는 것이 목적입니다.
-
-### 핵심 공식
-
-```
-공간 구성 History          공간 이용 History
-"무엇이·언제·왜 바뀌었나"  +  "얼마나·어떻게 쓰였나"   =   OFFICE HISTORY
-```
-
-### 절대 잊으면 안 되는 원칙
-
-1. **HISTORY > AI** — AI Insight는 축적된 기록을 해석하는 보조 기능입니다.
-   AI가 화면의 주인공이 되면 제품의 메시지가 무너집니다.
-2. **공간이 주인공** — 모든 화면은 카드나 숫자가 아니라 공간(아이소메트릭 · Floor Map)에서
-   시작하고, 숫자는 공간을 선택한 결과로 따라옵니다.
-3. **정보는 많지만 한 번에 보이는 정보는 적게** — 기본은 최근 이력 1~2건만,
-   전체는 사용자가 펼쳤을 때.
-4. **두 History의 연결이 제품의 정체성** — 각각 잘 만드는 것만으로는 부족합니다.
-   "바꿨는데 실제로 달라졌나?"에 답하는 것이 핵심입니다.
-5. 일반적인 자산관리 시스템(현재 무엇이 있는가)도, 이용률 대시보드(지금 얼마나 쓰나)도
-   아닙니다. **"왜 그렇게 되었나"와 "그 결과 무엇이 달라졌나"**가 핵심입니다.
-
-### 서비스 메시지
-
-- "사무환경의 경험을 일회성 업무가 아닌, 다음 판단을 위한 데이터로."
-- 궁극 철학: **"개인의 센스를 조직의 데이터로."** (사이드바 하단에 상시 노출)
-
----
-
-## 2. 기술 스택 — 여기가 가장 중요합니다
-
-### ⚠️ 이 프로젝트에는 Node.js도 빌드 도구도 없습니다
-
-```
-프레임워크   없음 — 순수 ES 모듈 + 바닐라 JS
-빌드         없음 — 소스를 그대로 브라우저가 실행
-패키지       package.json 없음, node_modules 없음
-타입         TypeScript 아님 (JSDoc 주석으로 형태 설명)
-서버         Python 정적 서버 (scripts/dev_server.py)
-```
-
-**이유**: 작업 PC에 Node.js가 설치되어 있지 않았고, 발표가 임박해서 툴체인 설치로
-시간을 쓰는 대신 빌드 리스크 0인 구조를 선택했습니다.
-
-👉 **다음 에이전트에게**: `npm install`, React 도입, Vite 설정 등을 제안하지 마세요.
-사용자가 명시적으로 요청하지 않는 한 현재 구조를 유지해야 합니다.
-React로 옮기기 쉽도록 컴포넌트·데이터 계층은 이미 분리해 두었습니다.
-
-### 실행 방법
+| | |
+|---|---|
+| 배포 주소 | https://20260915etnes.vercel.app |
+| GitHub | https://github.com/dlaskagur00-del/20260915_ETNS_G |
+| 로컬 경로 | `C:\Users\etners\Desktop\etns_vibe\OFFICE_HISTORY` |
+| 상태 | **완성. 시연 가능.** Supabase 연결만 남음 |
+| 커밋 | 28개 |
 
 ```bash
-cd "C:\Users\etners\Desktop\etns_vibe\OFFICE_HISTORY"
+# 개발 서버 (일반 http.server 쓰면 ES 모듈이 캐시돼서 수정이 안 보입니다)
 python scripts/dev_server.py 5173
-# → http://localhost:5173
 ```
-
-`scripts/dev_server.py`는 `Cache-Control: no-store`를 보냅니다. 일반
-`python -m http.server`를 쓰면 ES 모듈이 캐시되어 **수정이 반영되지 않습니다.**
-
-### Python 환경
-
-- 기본 `python` = **3.13.13** (Pillow 11.3.0, fonttools 4.59.0, brotli 설치됨)
-- `py -3.12` = 3.12.5 (Pillow 없음)
-- 스크립트는 3.12/3.13 양쪽 호환으로 작성되어 있습니다
 
 ---
 
-## 3. 아키텍처
+## 1. 이 제품이 무엇인가
+
+> **공간 구성 History** (무엇이·언제·왜 바뀌었나)
+> **＋ 공간 이용 History** (얼마나·어떻게 쓰였나)
+> **＝ OFFICE HISTORY**
+
+### 절대 원칙 (요청자가 명시한 것, 바꾸지 말 것)
+
+1. **HISTORY > AI** — AI는 거들 뿐. 주인공은 축적된 기록
+2. **공간이 주인공** — 사람·조직이 아니라 공간 단위로 모든 것이 기록됨
+3. **"정보는 많지만 한 번에 보이는 정보는 적게"**
+4. **두 History의 연결이 제품의 정체성** — 따로 놀면 의미 없음
+5. **AI가 제안하고 사람이 결정한다** — 결정 권한은 담당자에게
+
+### 핵심 서사 (시연의 축)
+
+회의실 A를 2024년에 8인 → 12인으로 확장했습니다(2,460만원).
+**이용률은 65% → 66%.** 규모가 부족했던 게 아니었습니다.
+기록이 없으면 절대 알 수 없는 사실이고, AI가 "넓히지 말고 나누자"고
+추천하는 근거입니다.
+
+---
+
+## 2. 기술 구조
+
+### 의도적으로 하지 않은 것 — 되돌리지 마세요
+
+- **빌드 도구 없음.** Node.js 미설치. npm, TypeScript, React 전부 없음
+- **프레임워크 없음.** 순수 ES 모듈 + 바닐라 JS
+- **SDK 없음.** Supabase도 `fetch` 로 REST 직접 호출
+
+이건 제약이 아니라 선택입니다. 발표장에서 빌드가 깨질 일이 없고,
+파일을 열면 바로 코드가 보입니다.
 
 ### 3계층 분리 (반드시 지킬 것)
 
 ```
-src/data/    ← Demo Data 원본. 여기만 실제 데이터를 가짐
-    ↓
-src/api/     ← 데이터 접근 계층. 나중에 실제 API로 교체할 지점
-    ↓
-src/pages/   ← 화면. data/를 직접 import하면 안 됨 (반드시 api/ 경유)
+src/data/   ← 원천 데이터. 화면이 여기를 직접 import 하면 안 됩니다
+src/api/    ← 데이터 접근 계층. 화면은 여기만 씁니다
+src/pages/  ← 화면
 ```
 
-### 폴더 구조
+### 폴더
 
 ```
-OFFICE_HISTORY/
-├── index.html                  진입점
-├── vercel.json                 정적 사이트 배포 설정
-├── HANDOFF.md                  ← 이 문서
-├── VISUAL_ASSET_REQUIREMENTS.md  필요한 이미지 28종 사양서 (프롬프트 포함)
-│
-├── styles/
-│   ├── fonts.css               Pretendard @font-face (로컬 번들)
-│   ├── tokens.css              색·폰트·간격 토큰
-│   ├── base.css                리셋 + 기본 타이포
-│   ├── layout.css              앱 셸 · 사이드바 · 그리드
-│   └── components.css          모든 컴포넌트 스타일
-│
-├── src/
-│   ├── main.js                 부트스트랩 (매니페스트 로드 → 렌더)
-│   ├── store/selection.js      전역 상태 (선택 공간 등) — 유일한 전역
-│   ├── lib/
-│   │   ├── dom.js              el() / svg() / panel() 등 DOM 헬퍼
-│   │   ├── iso.js              평면 좌표 → 아이소메트릭 투영
-│   │   ├── furniture.js        공간 타입 → 가구 배치 자동 생성
-│   │   ├── router.js           해시 라우팅 + URL에 선택 공간 반영
-│   │   └── format.js           날짜·금액·퍼센트 포맷
-│   ├── data/                   office, assets, changes, usage, insights,
-│   │                           projects, vendors, visualAssets, supabaseConfig
-│   ├── api/                    spaces, history, usage, insight, project,
-│   │                           vendors, assets, supabase
-│   ├── components/
-│   │   ├── layout/appShell.js      사이드바 · 상단바 · Context Bar
-│   │   ├── office/spaceScene.js    ★ 아이소메트릭/평면도 단일 렌더러
-│   │   ├── history/{timeline,detail}.js
-│   │   ├── usage/{changeImpact,usageLog}.js
-│   │   ├── insight/proposal.js
-│   │   ├── charts/{lineChart,barChart}.js
-│   │   └── ui/assetImage.js        이미지 · 스켈레톤 · Placeholder
-│   └── pages/                  dashboard, configuration, usage, insight, project
-│
-├── assets/
-│   ├── visual-assets.json      Asset 매니페스트 (28종, status: ready|required)
-│   ├── fonts/                  Pretendard 서브셋 woff2 5종 (1.67MB)
-│   ├── products/ materials/ office/ floorplans/ projects/ proposed/
-│   └── _originals/             생성 원본 (git 제외)
-│
-├── scripts/
-│   ├── dev_server.py           no-cache 정적 서버
-│   ├── images/process_assets.py    원본 → WebP + 썸네일 + 매니페스트 갱신
-│   ├── fonts/subset_fonts.py       Pretendard 서브셋 재생성
-│   └── supabase/build_setup_sql.py 매니페스트 → setup.sql
-│
-└── supabase/
-    └── setup.sql               테이블 + RLS + 메타데이터 (자동 생성됨)
+src/
+  main.js              진입점. render() 에 실패 방어가 들어 있습니다
+  store/selection.js   전역 상태는 "지금 무엇을 보고 있는가" 하나뿐
+  lib/                 dom, router, format, iso, furniture
+  api/                 spaces, history, usage, insight, project, vendors, assets, supabase
+  data/                office, changes, usage, insights, projects, vendors, assets,
+                       officeHotspots, objectHotspots, visualAssets, supabaseConfig
+  pages/               dashboard, configuration, usage, insight, project
+  components/
+    office/            spaceScene(SVG), visualStage(이미지+핫스팟), turntable(360도)
+    history/           timeline, detail
+    usage/             usageLog, changeImpact
+    insight/           proposal, aiLens
+    charts/            lineChart, barChart
+    layout/            appShell
+    ui/                assetImage
+assets/
+  visual-assets.json   Asset 매니페스트 (단일 원천)
+  office/ floorplans/ products/ materials/ projects/ proposed/ fonts/
+  _originals/          PNG 원본 (파이프라인 입력)
+  _originals/_raw/     정리 전 보관본
+scripts/
+  dev_server.py                   캐시 없는 정적 서버
+  images/process_assets.py        PNG → WebP + 썸네일 + 매니페스트 갱신
+  images/clean_product_shots.py   제품 컷에서 파일명·여백 잘라내기
+  fonts/subset_fonts.py           프리텐다드 서브셋
+  supabase/build_setup_sql.py     매니페스트 → setup.sql
+docs/                             원본 요청서 3종 + 이미지 요청서 V2·V3
+supabase/setup.sql                테이블 + RLS + Asset 68건 (자동 생성)
 ```
-
-### 핵심 설계 — `spaceScene.js` 하나가 모든 공간을 그립니다
-
-공간은 **평면 사각형(미터 단위)으로 한 번만 정의**되고, 같은 렌더러가 세 가지 뷰를 만듭니다.
-
-| mode | 쓰이는 곳 | 특징 |
-|---|---|---|
-| `iso` | Dashboard, 공간 구성 History | 가구 자동 배치, 선택 공간이 떠오름 |
-| `plan` | 공간 이용 History | 히트맵 색칠, 라벨에 이용률 |
-| `iso` + `boundsFrom` | AI 제안, Project Before/After | **viewBox 공유 → 카메라 앵글 구조적 동일** |
-
-`boundsFrom`이 핵심입니다. Current/Proposed 두 씬이 같은 viewBox를 쓰기 때문에
-"같은 앵글"이 눈대중이 아니라 **구조적으로 보장**됩니다.
-
-### 상태 관리
-
-`src/store/selection.js`의 전역 상태는 **"지금 무엇을 보고 있는가" 하나뿐**입니다.
-서버 데이터는 전역에 두지 않습니다.
-
-- `selectedSpaceId`는 **모든 화면이 공유**합니다. 화면을 옮겨도 유지되는 것이
-  데모 시나리오가 끊기지 않는 핵심 장치입니다.
-- URL에 반영됩니다 (`#/configuration?space=mr-a`) — 발표 중 새로고침해도 복구됩니다.
-- 공간을 바꾸면 하위 선택(asset · change · insight)은 초기화됩니다.
 
 ---
 
-## 4. 구현 완료 상태
+## 3. 현재 상태
 
-### 화면 5종 — 전부 동작
+### 완성된 것
 
-| 화면 | 내용 |
+| | |
 |---|---|
-| **Dashboard** | 공간 수 타일(24/8/10/6), 아이소메트릭 오피스 24개 공간, 최근 History 4건, 이번 달 이용률 |
-| **공간 구성 History** | 공간 선택 → 구성요소(Furniture/Finish/Facility) → 상세(제품 이미지·이전 제품·교체 사유·특이사항) → Timeline → **과거 시점 재구성** |
-| **공간 이용 History** | Floor Map 히트맵, 이용률 추이 + **변경 마커**, Day/Week/Month 필터, 이용 로그, 시간대/요일 패턴, 데이터 출처 |
-| **AI Insight** | 분석 근거(Evidence) 출처별 노출, 개선안 2건, Current/Proposed 동일 앵글 비교, 예상 비용 + 항목별 내역 + 추천 시공사 |
-| **Project Asset** | 완료 프로젝트 6건, Before/After, 결과 기록, **업체 History**, 연결된 기록 역추적 |
+| Visual Asset | **68 / 68 ready.** placeholder 0건 |
+| 변경 이력 | 40건 (회의실 A 13 · 라운지 6 · 집중업무존 A 6 · 나머지 각 1) |
+| AI Insight | 4건 (회의실 A · 라운지 · 집중업무존 A · 회의실 E) |
+| 손으로 쓴 구성 요소 | 회의실 A · 라운지 · 집중업무존 A (나머지는 템플릿 생성) |
+| 오브젝트 핫스팟 | 3세트 20개 (회의실 A 8 · 라운지 6 · 집중업무존 A 6) |
+| 360도 턴테이블 | 6세트 24프레임 (전부 회의실 A 오브젝트) |
+| 폰트 | 프리텐다드 서브셋 자체 호스팅. **외부 요청 0건** |
 
-### 특히 공들인 두 기능
+### 남은 것 — Supabase 연결
 
-**① 두 History의 연결 (제품의 차별점)**
-이용률 추이 라인차트 위에 **공간 변경 시점이 세로 마커**로 찍히고, 클릭하면
-변경 전후 비교 패널이 열립니다. 수치는 하드코딩이 아니라 **월별 데이터에서 계산**됩니다.
+**대시보드 작업이라 코드로 대신할 수 없습니다.**
 
-**② 과거 시점 재구성**
-Timeline에서 "2023.03 최초 구축"을 클릭하면 맵에서 **회의실 A가 8인 / 63㎡로 실제로
-줄어들고**, 구성 요소도 당시 제품으로 전부 바뀝니다 (`getSpaceStateAt()`이 타임라인을
-접어서 계산). "과거에는 무엇이 있었는가"를 눈으로 보여주는 장치입니다.
+1. **SQL 실행** — 대시보드 → SQL Editor → `supabase/setup.sql` 전체 붙여넣고 Run
+   확인: `select count(*) from public.visual_assets;` → **68**
+2. **버킷 생성** — Storage → New bucket → 이름 `office-history-assets` → **Public 켜기**
+3. **파일 업로드** — `assets/` 아래 6개 폴더를 통째로 드래그 (136개 파일, 6.7MB)
+   `scripts/supabase/` 로 업로드용 폴더를 다시 만들 수 있습니다
+4. **키 입력** — `src/data/supabaseConfig.js` 의 `url`, `anonKey`
+
+> ⚠️ **`service_role` 키는 절대 넣지 마세요.** 프런트엔드 파일이라 공개됩니다.
+> `anon` 키는 애초에 공개용이고, SQL 에 읽기 전용 RLS 를 걸어두었습니다.
+
+**연결 전에 알아둘 것:** 연결하면 앱이 이미지를 로컬이 아니라 Supabase 에서
+읽습니다. 136개 중 하나라도 빠지면 그 이미지가 깨집니다. 또 시작할 때
+Supabase 를 먼저 조회하고 실패하면 4초 후 로컬로 넘어갑니다.
+**시연이 급하면 연결하지 않는 편이 안전합니다** — 지금도 완전히 동작합니다.
 
 ---
 
-## 5. 데모 시나리오 — 이 숫자들은 절대 바꾸지 마세요
+## 4. 절대 되돌리면 안 되는 것
 
-발표 대본에 그대로 인용되는 수치입니다. **데이터를 수정할 때 이 값이 유지되는지
-반드시 확인하세요.**
+### 4-1. 데모 숫자 보정값
 
-| 항목 | 값 | 나오는 곳 |
-|---|---|---|
-| 회의실 A 현재 이용률 | **72%** | 이용 History 지표 |
-| 평균 이용 인원 | **4.2명** | 이용 History 지표 |
-| 평균 체류 시간 | **48분** | 이용 History 지표 |
-| Peak Time | **14:00~16:00** | 이용 History 지표 |
-| 최근 6개월 추이 | **64 / 67 / 71 / 69 / 74 / 72** | 이용률 추이 차트 |
-| 확장 전후 이용률 | **65.0% → 66.0%** | 변경 전후 비교 |
-| 확장 전후 평균 인원 | **4.1명 → 4.3명** | 변경 전후 비교 |
-| 4~6인 회의 비중 | **78%** | AI Insight 근거 |
-| 예상 비용 | **2,800~3,200만원** (평균 3,050만원) | AI Insight |
-| 항목별 내역 합계 | **₩30,000,000** | AI Insight |
-| 집중업무존 개선 결과 | **+18%p** | Project Asset |
-| Dashboard 이용률 | 전체 72 / 회의실 68 / 업무 81 / 공용 54 | Dashboard |
+`src/data/usage.js` 의 `REGIME` 이 **63.9 / 65.5** 로 되어 있습니다.
+얼핏 65 / 66 이어야 할 것 같지만, 노이즈 오프셋을 거치면 화면에
+**65.0% → 66.0%** 로 나오도록 맞춰둔 값입니다. "고치면" 시연 숫자가 깨집니다.
 
-**이 수치들이 유지되는 원리**
+### 4-2. 핫스팟 좌표는 손으로 잰 값
 
-- `src/data/usage.js`의 `PROFILES`가 공간별 현재 지표를 정의합니다.
-  그룹 평균이 정확히 68/81/54가 되도록, 전체는 면적 가중 평균이 72가 되도록 맞춰져 있습니다.
-- `PINNED`가 회의실 A의 최근 6개월을 고정합니다.
-- `REGIME`이 2024-01 확장 전후 수준을 정의하고, 노이즈까지 감안해
-  **63.9 / 65.5로 보정**되어 있습니다 (계산 결과가 65.0 / 66.0으로 나오게).
-  이 숫자를 "이상해 보인다"고 65/66으로 되돌리면 화면 값이 66.1/66.5로 틀어집니다.
-- 이용 데이터는 **시드 고정 난수**라 새로고침해도 값이 변하지 않습니다.
+`officeHotspots.js`(12개), `objectHotspots.js`(20개) 는 이미지 위 백분율
+좌표입니다. **이미지를 교체하면 전부 다시 재야 합니다.** 자동화 방법 없습니다.
 
-### 발표 흐름 (14단계)
+### 4-3. `.visual-stage` 의 `display: inline-block`
 
-```
-Dashboard → 회의실 A 클릭 → (자동) 구성 History
-  → Timeline에서 변경 이력 확인 → "이 변경의 이용 데이터 비교" 클릭
-  → 이용 History (공간 선택 유지) → 6개월 추이 · 지표 확인
-  → 변경 전후 비교 (65%→66%, 4.1→4.3명)
-  → Context Bar에서 AI Insight → 근거 · 개선안 확인
-  → Current/Proposed 동일 앵글 비교 → 예상 비용 · 추천 시공사
-  → Project Asset → 회의실 A 확장 프로젝트 결과 기록
+이미지를 정확히 감싸야 백분율 핫스팟이 맞습니다. `overflow:hidden` 이나
+`object-fit` 을 넣으면 이미지가 잘리면서 핫스팟이 전부 어긋납니다.
+
+### 4-4. 한글 폰트 서브셋
+
+**UI 에 새 한글 문구를 넣으면 반드시 재생성해야 합니다.**
+안 하면 그 글자가 화면에서 빈칸으로 나옵니다.
+
+```bash
+python scripts/fonts/subset_fonts.py
 ```
 
-각 화면에 **다음 단계로 넘어가는 버튼**이 배치되어 있어 사이드바를 찾지 않아도 됩니다.
+### 4-5. `scripts/` 위치
+
+`dev_server.py` 가 저장소 루트에 있으면 **Vercel 이 Flask 프로젝트로 오인**해
+배포가 실패합니다. `scripts/` 안에 있어야 합니다.
+`vercel.json` 의 `framework: null`, `outputDirectory: "."` 도 같은 이유입니다.
 
 ---
 
-## 6. 이미 내린 결정 — 모르고 되돌리지 마세요
+## 5. 이미지 파이프라인
 
-### 🔴 아이소메트릭 오피스를 SVG로 그리는 것은 의도된 선택입니다
-
-사용자가 나중에 준 「시각자료 요청서」 §2는 *"단순 SVG 도형으로 제품 표현 금지"*라고
-합니다. 현재 구현은 그 규칙과 충돌합니다. **하지만 현행 유지가 합의된 결론입니다.**
-
-이유:
-- AI 생성 오피스 이미지는 여기서 정의한 24개 공간 구성과 절대 일치하지 않습니다.
-  교체하면 hotspot 24개를 손으로 재측정하고 히트맵·과거시점·제안 비교의 좌표계까지
-  다시 맞춰야 합니다 (반나절 이상).
-- 이미지로 바꾸면 **과거 시점 재구성**과 **Current/Proposed 동일 앵글 보장**이 사라집니다.
-- 현재 SVG는 가구가 배치된 디지털 트윈 도식으로 읽히지, 저품질 placeholder가 아닙니다.
-
-👉 **대신 제품·마감재 이미지를 채우는 것이 우선순위**입니다 (체감 효과가 더 큼).
-
-### 🔴 폰트는 Pretendard 한 벌만, CDN 금지
-
-- 발표장 네트워크가 끊겨도 동일하게 보여야 해서 **외부 요청 0건**으로 만들었습니다.
-- mono 폰트(IBM Plex Mono)를 쓰다가 **한글이 섞인 라벨에서 폰트가 바뀌어 보이는 문제**가
-  있어 제거했습니다. 숫자 정렬은 `font-variant-numeric: tabular-nums`로 해결합니다.
-- **Regular(400) 파일이 없습니다.** CSS 매칭 규칙상 400 요청은 자동으로 Medium(500)으로
-  떨어집니다. 프로젝터에서는 오히려 또렷해서 그대로 두기로 했습니다.
-- 화면에 **새로운 한글을 추가하면** `python scripts/fonts/subset_fonts.py`를 다시 돌려야
-  합니다 (서브셋에 없는 글자는 안 보입니다). 상용 음절은 대부분 포함되어 있어
-  웬만한 문구 수정은 괜찮습니다.
-
-### 🟡 요구사항 문서 간 충돌을 이렇게 정리했습니다
-
-원본 요청서에 서로 모순되는 내용이 있어 다음과 같이 통일했습니다.
-
-| 충돌 | 결정 |
-|---|---|
-| 회의실 A 확장 시점이 2024.01과 2026.06으로 다르게 적힘 | **2024.01 확장**으로 통일. 그래야 "확장 후 2년이 지나도 여전히 4.2명"이라는 서사가 성립하고 6개월 추이와도 충돌하지 않음. 2026.06은 조명 교체 |
-| Dashboard 예시의 "2026.08.21 테이블 교체"와 Detail의 "설치일 2025.03.18" 충돌 | 2025.03은 테이블 교체, 2026.08.21은 **상판 교체(보수)**로 분리 |
-| 전체 공간 24개 vs 예시 공간 8개 | **24개 전부 상세 데이터** (사용자 선택) |
-| 전체 이용률 72%가 그룹 평균과 안 맞음 | 그룹은 단순 평균, **전체는 면적 가중 평균**으로 정의 |
-
-### 🟡 API 계층은 동기 함수입니다
-
-설계안에는 Promise 기반으로 적었지만, 실제로는 동기로 구현했습니다. 프로토타입이라
-비동기 렌더링 복잡도를 감수할 이유가 없었습니다. 교체 지점(`src/api/`)은 그대로라
-나중에 async로 바꿔도 화면 코드 수정 범위가 제한됩니다.
-
----
-
-## 7. Visual Asset 시스템
-
-### 동작 원리
-
-```
-assets/_originals/에 원본 이미지 저장 (파일명 = Asset ID)
-  ↓ python scripts/images/process_assets.py
-WebP 변환 + 썸네일 생성 + 매니페스트 status를 required → ready
-  ↓ 브라우저 새로고침
-화면에 자동 반영 (Placeholder → 실제 이미지)
+```bash
+# 1) PNG 를 assets/_originals/ 에 넣는다 (파일명 = Asset ID)
+# 2) 제품 컷이면 파일명·여백 정리
+python scripts/images/clean_product_shots.py --apply
+# 3) WebP 변환 + 썸네일 + 매니페스트 갱신
+python scripts/images/process_assets.py
 ```
 
-- 이미지가 없으면 **가짜 이미지를 만들지 않고** `VISUAL ASSET REQUIRED / 제품명 / asset_id`
-  Placeholder를 표시합니다 (요청서 §20·§41).
-- 최소 해상도 미달 이미지는 **확대하지 않고 실패 처리**합니다 (제품 800px, 공간 1200px).
-- 사이드바에 `VISUAL ASSET 9 / 28 LOCAL` 형태로 진행 상황이 상시 표시됩니다.
+### 파이프라인이 걸러내는 것
 
-### 현재 확보 상태: 9 / 28
-
-**완료(9)**: 회의 테이블 · 회의용 의자 · 75인치 디스플레이 · LED 라인 조명 ·
-유리 파티션 · 슬라이딩 도어 · 카페트 타일 · 흡음 패널 · 원목 마루
-
-**남은 19장**의 ID·용도·해상도·영문 프롬프트는 전부
-📄 `VISUAL_ASSET_REQUIREMENTS.md` 에 있습니다.
-
-**우선순위**: 회의실 A 3종(현재 / 2023 / 제안)이 가장 가치가 높습니다.
-**반드시 한 대화에서 연속 생성**해야 카메라 앵글이 같습니다.
-
-⚠️ **공간 이미지는 가로형(1536×1024)으로** 생성해야 합니다. 정사각형은 거부됩니다.
-
----
-
-## 8. 배포 상태
-
-### GitHub
-- https://github.com/dlaskagur00-del/20260915_ETNS_G (`main` 브랜치)
-- 원래 할일관리 앱이 있던 저장소를 **force push로 덮어썼습니다** (사용자 승인함).
-  할일관리 앱은 로컬 `../ETNS_ TODO_APP/`에 6개 커밋으로 남아 있습니다.
-
-### Vercel
-- https://20260915etnes.vercel.app — **자동 배포됨** (`git push`만 하면 반영)
-- 빌드 없는 정적 사이트입니다. `vercel.json`에 `framework: null`,
-  `buildCommand: null`, `outputDirectory: "."`로 명시되어 있습니다.
-- ⚠️ **루트에 `.py` 파일을 두지 마세요.** Vercel이 Flask 앱으로 오인해 배포가 실패합니다
-  (실제로 한 번 겪었고, `dev_server.py`를 `scripts/`로 옮겨 해결했습니다).
-
-### Supabase — 코드는 완성, 사용자 설정 대기 중
-
-| 단계 | 상태 |
+| 검사 | 기준 |
 |---|---|
-| 초기 설정 (`supabase/setup.sql`) | 생성 완료, **실행 대기** |
-| Storage 버킷 `office-history-assets` | **생성 대기** (Public 필수) |
-| 이미지 업로드 | **대기** |
-| `src/data/supabaseConfig.js` 채우기 | **대기** (url · anonKey) |
+| 사실상 빈 이미지 | 내용이 프레임의 30% 미만이면 **실패** |
+| 피사체가 작음 | 60% 미만이면 경고 |
+| 해상도 부족 | 타입별 최소 폭 미달이면 실패 |
 
-**설계**: Supabase를 우선 사용하되 **4초 안에 응답이 없거나 실패하면 로컬 매니페스트로
-자동 전환**합니다. 발표장에서 네트워크가 끊겨도 화면이 그대로 뜹니다.
-사이드바 표시가 `LOCAL` ↔ `SUPABASE`로 바뀌어 현재 원천을 확인할 수 있습니다.
+### 실제로 겪은 함정 — 같은 실수 반복하지 마세요
 
-⚠️ `anonKey`만 넣으세요. `service_role` 키는 절대 프런트엔드에 넣으면 안 됩니다.
+1. **흰 캔버스에 파일명이 찍힌 이미지** 6장이 화면까지 올라갔습니다.
+   `material`·`product` 은 여백 제거 대상이 아니라 검사를 안 거쳤습니다
+2. **두 그림이 한 캔버스에 나란히** 붙은 이미지 2장. 여백 검사가 못 잡습니다 —
+   붙어 있던 게 흰 여백이 아니라 다른 그림이라 "100% 채움"으로 계산됐습니다.
+   **세로로 완전히 흰 줄이 안쪽에 있는지**로 따로 검사해야 찾습니다
+3. **정리 스크립트가 멱등하지 않았습니다.** 두 번 돌리면 여백이 더 깎였습니다.
+   지금은 항상 `_raw/` 원본에서 출발합니다
+4. **파일명이 그대로라 브라우저가 옛 이미지를 계속 썼습니다.**
+   지금은 `?v=<generatedAt>` 을 붙여 캐시를 끊습니다
 
----
+### 이미지 생성 시 반드시 넣을 문구
 
-## 9. 남은 작업
+GPT 이미지 출력 상한은 **가로 1536px** 입니다. "4K" 같은 말은 효과 없습니다.
+대신 아래 문구가 결정적입니다 — 이게 없으면 흐릿하게 나옵니다.
 
-### 이미지만 있으면 되는 것
-- 회의실 A 3종 → Before/After · Current/Proposed가 실제 렌더로 바뀜
-- 공간 개별 5종, 제품 4종, 마감재 3종, 프로젝트 2종
+```
+Sharp focus across the entire frame, no depth-of-field blur, no soft glow,
+no painterly or rendered look, no CGI smoothness.
+Full frame composition, fills the entire frame edge to edge,
+no white margins, no border, no padding.
+```
 
-### 사용자 작업 대기
-- Supabase 4단계 (스키마 → seed → 버킷 → 설정 파일)
-
-### 개념 문서 기준 미구현 (우선순위 순)
-1. **최초 견적 vs 최종 비용** (§15) — 지금은 최종 비용만 있음. 저비용·고효과
-2. **업체 History 전용 화면** (§16) — 현재는 Project Asset 안에만 있음
-3. **Case Study / Portfolio 뷰** (§17) — `isPublicCase` 플래그만 있고 화면 없음
-4. **관련 사진·도면·문서 뷰어** (§5) — 파일명 칩만 있고 실제 열람 불가
-5. **자재 History** (§13) — 자재가 항목 속성으로만 존재
-
----
-
-## 10. 다음 에이전트를 위한 체크리스트
-
-작업을 시작하기 전에:
-
-- [ ] `python scripts/dev_server.py 5173`으로 실행해서 현재 상태를 눈으로 확인
-- [ ] 데모 시나리오 14단계를 직접 클릭해보기 (5장의 흐름)
-- [ ] 6장(이미 내린 결정)을 읽고, 되돌리려는 것이 아닌지 점검
-
-작업하면서:
-
-- [ ] `src/pages/`에서 `src/data/`를 직접 import하지 않기 (반드시 `src/api/` 경유)
-- [ ] 5장의 데모 수치가 유지되는지 변경 후 확인
-- [ ] 화면에 새 한글을 추가했으면 `subset_fonts.py` 재실행
-- [ ] 루트에 `.py` 파일 두지 않기 (Vercel 배포 실패)
-- [ ] 외부 CDN 링크 추가하지 않기 (오프라인 동작 보장)
-
-마무리:
-
-- [ ] 브라우저에서 5개 화면 전부 렌더 + 콘솔 에러 0건 확인
-- [ ] `git push` → Vercel 자동 배포 → 배포 사이트에서 재확인
+실제로 이 문구 하나로 공간 이미지 13장의 선명도가 **3.4 → 18.8 (5.5배)**
+올랐습니다.
 
 ---
 
-## 11. 참고 문서
+## 6. 화질에 대해 (측정 결과)
 
-### 사용자가 준 원본 요청서 (docs/)
+- 원본 1536px, 화면 표시 1180px (1920 기준) → **업스케일 아님**
+- 턴테이블·제품·마감재는 화면에서 34~356px 로 작게 표시됨
+  → **다시 뽑아도 차이가 안 보입니다.** 공간 이미지만 신경 쓰면 됩니다
+- 확대(`⤢ 크게 보기`)하면 1440px 까지 커지지만 여전히 원본 이내
+- **AI 업스케일은 권하지 않습니다.** 없는 디테일을 지어내서 인테리어에서는
+  나뭇결이 이상한 패턴으로 바뀝니다
 
-| 문서 | 내용 |
+---
+
+## 7. 시연 영상
+
+`C:\Users\etners\Desktop\OFFICE_HISTORY_시연영상.mp4` (3분 05초, 1920×1080)
+
+ffmpeg 으로 편집했습니다. 편집 명세와 스크립트는 세션 작업 폴더에 있습니다
+(`edit_spec.py`, `make_video2.py`). 다시 만들려면 원본 녹화본이 필요합니다.
+
+**편집에서 배운 것**
+
+- **자막은 반드시 한 줄.** 두 줄로 쓰면 아래 줄이 화면 밖으로 잘립니다.
+  길면 두 개로 나눠 차례로 띄웁니다
+- `drawtext` 는 `%` 를 서식 문자로 해석합니다. `65%` 같은 숫자가 들어가면
+  오류가 나므로 텍스트를 파일로 넘겨야 합니다
+- 구간을 통째로 지우면 화면이 튑니다. **1초 빨리감기로 압축**하면 자연스럽습니다
+- 화면 녹화는 **1.2배까지** 자연스럽습니다. 그 이상은 커서가 미끄러져 보입니다
+
+---
+
+## 8. 알려진 한계
+
+| | |
 |---|---|
-| `docs/01_개발요청서.md` | 기능 요구사항 · 화면별 명세 · STEP 1~9 개발 단계 |
-| `docs/02_개념설명서.md` | 서비스 철학 28개 장 — **판단 기준이 되는 문서** |
-| `docs/03_시각자료요청서.md` | Visual Asset 시스템 44개 장 |
+| 클릭 가능한 공간 | 오피스 맵 5개 · 평면도 7개 (전체 24개 중) |
+| 깊이가 있는 공간 | 3개 (회의실 A · 라운지 · 집중업무존 A). 나머지는 변경 1건 |
+| 360도 회전 | 회의실 A 오브젝트 6개만 |
+| 로그인 | 없음. 데이터가 전부 정적으로 노출됨 (전부 `* Demo Data`) |
+| 오프라인 | Service Worker 없음. 단 폰트·이미지가 전부 자체 호스팅이라 강한 편 |
 
-⚠️ `03_시각자료요청서.md`는 실제 레포를 보지 않고 작성되어 일부 전제가 다릅니다
-(Next.js·TypeScript·Supabase 연결을 전제). 글자 그대로 따르기 전에 6장을 확인하세요.
+**로그인을 붙인다면** — 지금 구조에서는 화면 앞에 문을 다는 것과 데이터를
+잠그는 것이 별개입니다. `/src/data/changes.js` 를 주소창에 직접 치면 다 보입니다.
+발표용이라면 브라우저 안에서 판정하는 방식이 안전합니다(네트워크가 끊겨도 진입 가능).
+실제 접근 제어가 필요해지면 데이터를 Supabase 로 옮기고 RLS 를 걸어야 합니다.
 
-### 이 프로젝트가 생성한 문서
+**AutoCAD 연동을 묻는다면** — Autodesk Platform Services 의 Viewer SDK 로 가능합니다.
+다만 DWG → SVF 변환(Model Derivative, 유료), 서버에서 토큰 발급(현재 서버 없음),
+상시 네트워크가 필요합니다. 도면 정확도만 필요하면 **AutoCAD 에서 PDF·이미지로
+내보내 지금 평면도 자리에 넣으면** 대부분의 이득을 얻습니다.
 
-| 문서 | 내용 |
+---
+
+## 9. 자주 하게 될 작업
+
+```bash
+# 개발 서버 (캐시 없음 — 일반 http.server 쓰지 말 것)
+python scripts/dev_server.py 5173
+
+# 새 이미지 반영
+python scripts/images/clean_product_shots.py --apply   # 제품 컷일 때만
+python scripts/images/process_assets.py
+
+# UI 에 한글 문구를 추가한 뒤 (안 하면 글자가 빈칸으로 나옴)
+python scripts/fonts/subset_fonts.py
+
+# Asset 이 늘었을 때 Supabase SQL 다시 만들기
+python scripts/supabase/build_setup_sql.py
+
+# 배포 (Vercel 이 자동으로 받습니다)
+git add -A && git commit -m "..." && git push
+```
+
+> 이 PC 에서 `python` 은 Pillow 가 없는 3.12 를 가리킵니다.
+> 파이프라인은 **3.13** 으로 실행해야 합니다:
+> `C:\Users\etners\AppData\Local\Programs\Python\Python313\python.exe`
+
+---
+
+## 10. 요청자에 대해
+
+- 발표자는 ETNERS 인턴 **임남혁**. 발표 10분, PPT 7분, 영상 3분 예정
+- 이미지는 전부 GPT 로 직접 생성해 옵니다. **프롬프트를 복사·붙여넣기 할 수 있게**
+  주면 가장 잘 진행됩니다. 파일명을 지정해 주는 것이 중요합니다
+- 완료 보고는 **짧게** 원합니다:
+  `완료 / 수정: [파일] / 핵심: [3~6개] / 검증: [결과] / 남은 문제: [없음 또는 항목]`
+- **자격 증명은 직접 다루지 않습니다.** 비밀번호·연결 문자열은 사용자가 직접
+  입력합니다. `anon` 키만 파일에 들어갑니다
+
+---
+
+## 11. 원본 요청서
+
+`docs/` 에 요청자가 준 원본이 그대로 있습니다. 판단이 갈릴 때 여기가 기준입니다.
+
+| 파일 | 내용 |
 |---|---|
-| `VISUAL_ASSET_REQUIREMENTS.md` | 필요한 이미지 28종 사양서 + 영문 프롬프트 |
-| `supabase/setup.sql` | 테이블 · RLS 정책 · Asset 메타데이터 68건 (자동 생성) |
-
-### 판단이 어려울 때
-
-기능을 넣을지 말지 고민되면 `docs/02_개념설명서.md` §27의 마지막 질문을 쓰세요.
-
-> "이 기능이 History를 더 잘 기록하거나, 찾거나, 연결하거나,
->  다음 판단에 활용하는 데 어떤 도움을 주는가?"
-
-명확히 답할 수 없으면 핵심 기능이 아닐 가능성이 높습니다.
+| `01_개발요청서.md` | 기능 명세 26개 절 |
+| `02_개념설명서.md` | 제품 철학 28개 절 — **가장 중요** |
+| `03_시각자료요청서.md` | 시각 자산 기준 44개 절 |
+| `IMAGE_BRIEF_V2.md` | 40장 요청서 (완료) |
+| `IMAGE_BRIEF_V3.md` | 마감 9장 요청서 (완료) |
