@@ -88,16 +88,6 @@
   line-height: 1.5;
 }
 
-.nav-tagline {
-  color: var(--nav-text);
-  font-size: 14px;
-  line-height: 1.45;
-  letter-spacing: -0.01em;
-  padding-bottom: 12px;
-  margin-bottom: 10px;
-  border-bottom: 1px solid var(--nav-line);
-}
-
 .nav-office { color: var(--nav-text-dim); }
 
 /* ---- Main column ---- */

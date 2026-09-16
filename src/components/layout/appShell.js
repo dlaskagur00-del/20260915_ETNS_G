@@ -64,7 +64,6 @@ function sidebar(state) {
     el(
       "div",
       { class: "nav-foot" },
-      el("div", { class: "nav-tagline" }, "개인의 센스를", el("br"), "조직의 데이터로."),
       // 확보된 Visual Asset 진행 상황 — 빠진 이미지를 잊지 않기 위한 표시
       (() => {
         const { ready, total, source } = assetProgress();
