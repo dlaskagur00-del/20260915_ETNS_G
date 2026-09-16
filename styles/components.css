@@ -95,32 +95,6 @@
 }
 
 /* ============ Stat tiles ============ */
-.stat {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--r-md);
-  padding: 14px 16px;
-}
-.stat .k {
-  font-family: var(--font-mono);
-  font-size: 11.5px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-3);
-  margin-bottom: 6px;
-}
-.stat .v {
-  font-family: var(--font-mono);
-  font-size: 27px;
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
-  color: var(--text);
-  line-height: 1.15;
-}
-.stat .v small { font-size: 14.5px; color: var(--text-3); margin-left: 2px; }
-.stat .d { font-size: 13px; color: var(--text-3); margin-top: 3px; }
-
 /* ============ Detail rows ============ */
 .drow {
   display: grid;

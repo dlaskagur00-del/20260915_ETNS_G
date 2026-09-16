@@ -1,4 +1,4 @@
-import { chip, demoMark, el, panel, stat } from "../lib/dom.js";
+import { chip, demoMark, el, panel } from "../lib/dom.js";
 import { navigate } from "../lib/router.js";
 import { selectSpace } from "../store/selection.js";
 import { getOffice, getSpace, getSpaceCounts, listSpaces } from "../api/spaces.js";
@@ -130,17 +130,12 @@ export function dashboardPage(state) {
     usageBar("공용공간 이용률", usage.common)
   );
 
+  // 상단바가 이미 "전체 24 · 회의실 8 · 업무 10 · 공용 6" 을 말하고 있어서,
+  // 같은 숫자 네 개를 카드로 한 번 더 쓰면 첫 화면의 가장 큰 자리가 중복으로
+  // 채워집니다. 공간이 주인공이므로 그 자리는 오피스 맵에 넘깁니다.
   return el(
     "div",
     { class: "stack" },
-    el(
-      "div",
-      { class: "grid-4" },
-      stat({ label: "전체 공간", value: counts.total, desc: office.name }),
-      stat({ label: "회의실", value: counts.meeting, desc: "Meeting Room" }),
-      stat({ label: "업무 공간", value: counts.work, desc: "Work Space" }),
-      stat({ label: "공용 공간", value: counts.common, desc: "Common Area" })
-    ),
     el("div", { class: "split" }, stage, el("div", { class: "stack" }, recent, usagePanel))
   );
 }

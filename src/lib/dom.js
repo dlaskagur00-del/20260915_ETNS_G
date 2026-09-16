@@ -70,16 +70,6 @@ export function panel({ title, sub, actions, flush = false, foot }, ...body) {
   );
 }
 
-export function stat({ label, value, unit, desc }) {
-  return el(
-    "div",
-    { class: "stat" },
-    el("div", { class: "k" }, label),
-    el("div", { class: "v" }, String(value), unit ? el("small", {}, unit) : null),
-    desc && el("div", { class: "d" }, desc)
-  );
-}
-
 export function detailRow(key, value, opts = {}) {
   return el(
     "div",
