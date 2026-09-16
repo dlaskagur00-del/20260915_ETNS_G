@@ -97,11 +97,6 @@ function topbar() {
         { class: "office-meta mono" },
         `${office.floorLabel} · 전체 ${counts.total} · 회의실 ${counts.meeting} · 업무 ${counts.work} · 공용 ${counts.common}`
       )
-    ),
-    el(
-      "div",
-      { class: "user" },
-      el("span", {}, "사무환경팀 김담당")
     )
   );
 }

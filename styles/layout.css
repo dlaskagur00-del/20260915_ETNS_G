@@ -118,14 +118,6 @@
 .topbar .office-name { font-size: 16.5px; font-weight: 600; }
 .topbar .office-meta { font-size: 13px; color: var(--text-3); }
 
-.topbar .user {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  font-size: 14px;
-  color: var(--text-2);
-}
-
 /* ---- Context bar: the selected space persists across pages ---- */
 .contextbar {
   height: var(--contextbar-h);
