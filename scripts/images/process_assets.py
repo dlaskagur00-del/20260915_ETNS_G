@@ -19,7 +19,7 @@ import sys
 from pathlib import Path
 
 try:
-    from PIL import Image, ImageChops
+    from PIL import Image, ImageStat, ImageChops
 except ImportError:
     sys.exit(
         "Pillow가 필요합니다.\n"
@@ -60,6 +60,9 @@ MAX_WIDTH = {
     "product": 1200,
     "material": 1000,
 }
+
+# 이 값보다 밋밋하면 사실상 빈 이미지로 봅니다. 정상 스와치는 20~50 사이입니다.
+BLANK_STDDEV = 12
 
 THUMB_WIDTH = 480
 
@@ -108,6 +111,17 @@ def trim_whitespace(image: Image.Image, tolerance: int = 8) -> Image.Image:
     return image.crop((left, top, right, bottom))
 
 
+def looks_blank(image: Image.Image) -> bool:
+    """거의 무지인 이미지를 걸러냅니다.
+
+    흰 배경에 파일 아이콘만 덩그러니 있는 이미지가 마감재 스와치로 들어간 적이
+    있습니다. 여백 제거 대상이 아닌 타입(material·product)은 잘리지도 않아서
+    끝까지 살아남았습니다. 표준편차는 "화면에 실제로 그려진 것이 얼마나 되는가"를
+    한 숫자로 보여주기 때문에, 이런 이미지를 사람 눈으로 보기 전에 잡아냅니다.
+    """
+    return ImageStat.Stat(image.convert("L")).stddev[0] < BLANK_STDDEV
+
+
 def to_webp(image: Image.Image, target: Path, width: int, quality: int = WEBP_QUALITY) -> tuple[int, int]:
     resized = image
     if image.width > width:
@@ -142,6 +156,13 @@ def process(check_only: bool = False) -> int:
 
         with Image.open(original) as raw:
             image = trim_whitespace(raw) if entry["type"] in TRIM_TYPES else raw
+
+            # 내용이 거의 없는 이미지는 여기서 멈춥니다. 통과시키면 화면까지
+            # 올라가고, 발표 중에야 비어 보이는 것을 알게 됩니다.
+            if looks_blank(image):
+                failed.append((asset_id, "사실상 빈 이미지 — 흰 배경에 내용이 거의 없습니다"))
+                continue
+
             min_width = MIN_WIDTH.get(entry["type"], 800)
             trimmed = entry["type"] in TRIM_TYPES and image.width < raw.width
             if image.width < min_width:
