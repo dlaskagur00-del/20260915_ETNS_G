@@ -61,8 +61,12 @@ MAX_WIDTH = {
     "material": 1000,
 }
 
-# 이 값보다 밋밋하면 사실상 빈 이미지로 봅니다. 정상 스와치는 20~50 사이입니다.
-BLANK_STDDEV = 12
+# 깨진 이미지의 진짜 신호는 "밋밋함"이 아니라 "흰 캔버스에 피사체가 조그맣게
+# 박혀 있음"이었습니다. 실제로 도장 마감 벽은 정상인데도 밋밋해서(표준편차 8.6)
+# 밋밋함만 보면 멀쩡한 이미지를 떨어뜨립니다.
+BLANK_RATIO = 0.30      # 이보다 작으면 사실상 빈 이미지 — 처리 중단
+SMALL_RATIO = 0.60      # 이보다 작으면 확대 시 흐림 — 경고만
+BLANK_STDDEV = 4        # 완전한 단색만 걸러내는 최후 방어선
 
 THUMB_WIDTH = 480
 
@@ -111,15 +115,27 @@ def trim_whitespace(image: Image.Image, tolerance: int = 8) -> Image.Image:
     return image.crop((left, top, right, bottom))
 
 
-def looks_blank(image: Image.Image) -> bool:
-    """거의 무지인 이미지를 걸러냅니다.
+def content_ratio(image: Image.Image) -> float:
+    """흰 배경을 뺀 실제 내용이 가로폭의 몇 퍼센트를 차지하는지."""
+    rgb = image.convert("RGB")
+    blank = Image.new("RGB", rgb.size, (255, 255, 255))
+    mask = ImageChops.difference(rgb, blank).convert("L").point(lambda v: 255 if v > 8 else 0)
+    box = mask.getbbox()
+    return 1.0 if not box else (box[2] - box[0]) / rgb.width
 
-    흰 배경에 파일 아이콘만 덩그러니 있는 이미지가 마감재 스와치로 들어간 적이
-    있습니다. 여백 제거 대상이 아닌 타입(material·product)은 잘리지도 않아서
-    끝까지 살아남았습니다. 표준편차는 "화면에 실제로 그려진 것이 얼마나 되는가"를
-    한 숫자로 보여주기 때문에, 이런 이미지를 사람 눈으로 보기 전에 잡아냅니다.
+
+def looks_blank(image: Image.Image) -> bool:
+    """사실상 빈 이미지인지.
+
+    흰 배경 한가운데 파일 아이콘과 파일명만 박힌 이미지가 마감재 스와치로 들어간
+    적이 있습니다. materials·product 타입은 여백 제거 대상이 아니라 잘리지도,
+    여백 검사에 걸리지도 않아 화면까지 올라갔습니다.
+
+    처음에는 표준편차만 봤는데, 그러면 정상인 도장 마감 벽(원래 밋밋합니다)까지
+    떨어집니다. 실제 신호는 "피사체가 프레임을 거의 안 채운다" 쪽이라 그것을
+    기준으로 삼고, 표준편차는 완전한 단색만 잡는 보조로 남겼습니다.
     """
-    return ImageStat.Stat(image.convert("L")).stddev[0] < BLANK_STDDEV
+    return content_ratio(image) < BLANK_RATIO or ImageStat.Stat(image.convert("L")).stddev[0] < BLANK_STDDEV
 
 
 def to_webp(image: Image.Image, target: Path, width: int, quality: int = WEBP_QUALITY) -> tuple[int, int]:
@@ -139,6 +155,7 @@ def process(check_only: bool = False) -> int:
     assets = manifest["assets"]
 
     processed, skipped, failed, low_res = [], [], [], []
+    small_subject = []
 
     for asset_id, entry in assets.items():
         original = find_original(asset_id)
@@ -162,6 +179,10 @@ def process(check_only: bool = False) -> int:
             if looks_blank(image):
                 failed.append((asset_id, "사실상 빈 이미지 — 흰 배경에 내용이 거의 없습니다"))
                 continue
+
+            ratio = content_ratio(image)
+            if ratio < SMALL_RATIO:
+                small_subject.append((asset_id, ratio))
 
             min_width = MIN_WIDTH.get(entry["type"], 800)
             trimmed = entry["type"] in TRIM_TYPES and image.width < raw.width
@@ -199,6 +220,12 @@ def process(check_only: bool = False) -> int:
         print(f"  [OK]   {asset_id}  {width}x{height}")
     for asset_id, reason in failed:
         print(f"  [FAIL] {asset_id}  {reason}")
+    if small_subject:
+        print("")
+        print(f"  피사체가 작음 {len(small_subject)}건 — 흰 여백이 많아 확대하면 흐립니다.")
+        for asset_id, ratio in small_subject:
+            print(f"    - {asset_id}: 프레임의 {ratio:.0%}만 차지")
+
     if low_res:
         print("")
         print(f"  해상도 낮음 {len(low_res)}건 — 흰 여백을 잘라낸 뒤 내용이 작습니다.")
