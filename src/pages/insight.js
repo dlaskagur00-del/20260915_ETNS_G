@@ -128,10 +128,13 @@ export function insightPage(state) {
       "div",
       { class: "request-ctx" },
       el("div", { class: "request-ctx-k" }, "클라이언트 요청"),
+      // 요청 문장은 Insight마다 다릅니다. 고정 문구를 쓰면 라운지에서
+      // "라운지 쪽 회의실이 부족하다"는 말이 안 되는 문장이 나옵니다.
       el(
         "div",
         { class: "request-ctx-v" },
-        `"${insightSpace.name} 쪽 회의실이 부족하다는 얘기가 계속 나옵니다. 어떻게 하는 게 좋을까요?"`
+        activeInsight.request ||
+          `"${insightSpace.name} 이용에 대해 개선할 점이 있는지 봐주실 수 있을까요?"`
       ),
       el(
         "div",

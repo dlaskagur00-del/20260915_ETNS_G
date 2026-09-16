@@ -9,8 +9,71 @@
  */
 
 export const INSIGHTS = [
+  /* 라운지 — 집중업무존 A의 추천("이용률 낮은 공용 공간 일부를 집중 좌석으로")과
+     맞물립니다. 한쪽은 포화, 한쪽은 시간대 편중이라 같은 기록이 두 방향에서
+     읽히는 사례입니다. */
+  {
+    id: "ins-lounge-timeband",
+    request: "\"라운지가 점심때만 붐비고 평소엔 텅 비어 있는데, 이대로 둬도 될까요?\"",
+    spaceId: "lounge",
+    createdAt: "2026-09-10",
+    type: "시간대 편중",
+    confidence: 0.68,
+    status: "검토 대기",
+    summary: "이용은 늘었지만 점심 2시간에 몰려 있고 나머지 시간은 비어 있습니다.",
+    reason:
+      "라운지의 평균 이용률은 63%로 공용공간 중 가장 높지만, 이용이 12–14시에 집중되어 있습니다. " +
+      "정원 24인 대비 평균 이용 인원은 6.4명으로, 피크 시간을 빼면 대부분 비어 있는 상태입니다. " +
+      "2025.11 소파를 4석에서 8석으로 늘린 뒤 체류 인원은 늘었지만, 늘어난 이용이 피크 시간대에만 " +
+      "발생해 시간대 편중은 오히려 심해졌습니다. " +
+      "같은 기간 집중업무존 A는 이용률 82%로 오전에 사실상 포화 상태입니다.",
+    evidence: [
+      { source: "공간 이용 History", label: "평균 이용률", value: "63%" },
+      { source: "공간 이용 History", label: "평균 이용 인원", value: "6.4명 / 정원 24인" },
+      { source: "공간 이용 History", label: "피크 시간대", value: "12–14시" },
+      { source: "공간 구성 History", label: "소파 4석 → 8석", value: "2025.11 · ₩7,200,000" },
+      { source: "Project Asset", label: "바닥 교체 후 이용률", value: "57% → 63%" },
+      { source: "공간 이용 History", label: "집중업무존 A 이용률", value: "82% · 오전 포화" },
+    ],
+    recommendations: [
+      {
+        id: "prop-lounge-hybrid",
+        title: "비피크 시간대를 집중 좌석으로 겸용",
+        description:
+          "라운지 한쪽에 1인용 하이테이블 좌석을 두어, 점심 외 시간에는 집중업무 좌석으로 쓰이게 하는 방향입니다. " +
+          "집중업무존 A의 오전 포화를 일부 흡수할 수 있습니다.",
+        expectedEffect: "라운지 비피크 이용률 상승 · 집중업무존 대기 감소 · 점심 좌석 수는 유지",
+        estimatedCost: {
+          min: 3200000,
+          max: 4800000,
+          basis: {
+            avgCost: 4000000,
+            similarProjects: [{ title: "Open Desk B 좌석 확장", year: 2026, cost: 8900000 }],
+            note: "좌석 수 대비 환산",
+          },
+        },
+        layout: null,
+      },
+      {
+        id: "prop-lounge-keep",
+        title: "현행 유지 · 관찰 계속",
+        description:
+          "점심시간 혼잡은 공용공간의 정상적인 사용 패턴일 수 있습니다. " +
+          "겸용 좌석은 휴게 목적을 해칠 수 있어, 두 분기 더 관찰한 뒤 판단하는 선택지입니다.",
+        expectedEffect: "비용 없음 · 판단 근거 축적",
+        estimatedCost: {
+          min: 0,
+          max: 0,
+          basis: { avgCost: 0, similarProjects: [], note: "조치 없음" },
+        },
+        layout: null,
+      },
+    ],
+  },
+
   {
     id: "ins-mra-capacity",
+    request: "\"회의실이 부족하다는 얘기가 계속 나옵니다. 어떻게 하는 게 좋을까요?\"",
     spaceId: "mr-a",
     createdAt: "2026-09-10",
     type: "공간 효율",
@@ -104,6 +167,7 @@ export const INSIGHTS = [
   },
   {
     id: "ins-focusa-demand",
+    request: "\"집중해서 일할 자리가 늘 없다는 얘기가 나옵니다. 어떻게 하는 게 좋을까요?\"",
     spaceId: "focus-a",
     createdAt: "2026-09-08",
     type: "수요 초과",

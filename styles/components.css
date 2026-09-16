@@ -1394,3 +1394,14 @@
   font-weight: 600;
   line-height: 1.6;
 }
+
+.render-error {
+  margin: 40px auto;
+  max-width: 460px;
+  padding: 32px 28px;
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+.render-error-k { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+.render-error-t { font-size: 14px; color: var(--text-2); margin-bottom: 18px; line-height: 1.5; }
