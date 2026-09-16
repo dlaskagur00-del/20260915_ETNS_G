@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-16T17:26:55",
+  "generatedAt": "2026-09-17T08:00:54",
   "assets": {
     "floor_plan_main": {
       "status": "ready",
@@ -282,7 +282,7 @@
       "thumbnailUrl": "assets/products/product_air_purifier_thumb.webp",
       "alt": "공기청정 설비",
       "ratio": "1:1",
-      "width": 1024,
+      "width": 766,
       "height": 1024,
       "source": null,
       "sourceUrl": null,
@@ -442,7 +442,7 @@
       "thumbnailUrl": "assets/products/product_meeting_chair_thumb.webp",
       "alt": "메쉬 등받이와 알루미늄 베이스의 회의용 의자",
       "ratio": "4:3",
-      "width": 450,
+      "width": 298,
       "height": 378,
       "source": null,
       "sourceUrl": null,
