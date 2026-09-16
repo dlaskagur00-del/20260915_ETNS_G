@@ -145,11 +145,10 @@ OFFICE_HISTORY/
 │   ├── dev_server.py           no-cache 정적 서버
 │   ├── images/process_assets.py    원본 → WebP + 썸네일 + 매니페스트 갱신
 │   ├── fonts/subset_fonts.py       Pretendard 서브셋 재생성
-│   └── supabase/generate_seed.py   매니페스트 → seed.sql
+│   └── supabase/build_setup_sql.py 매니페스트 → setup.sql
 │
 └── supabase/
-    ├── schema.sql              visual_assets 테이블 + RLS
-    └── seed.sql                28건 메타데이터 (자동 생성됨)
+    └── setup.sql               테이블 + RLS + 메타데이터 (자동 생성됨)
 ```
 
 ### 핵심 설계 — `spaceScene.js` 하나가 모든 공간을 그립니다
@@ -344,8 +343,7 @@ WebP 변환 + 썸네일 생성 + 매니페스트 status를 required → ready
 
 | 단계 | 상태 |
 |---|---|
-| 테이블 스키마 (`supabase/schema.sql`) | 작성 완료, **실행 대기** |
-| 메타데이터 seed (`supabase/seed.sql`) | 생성 완료, **실행 대기** |
+| 초기 설정 (`supabase/setup.sql`) | 생성 완료, **실행 대기** |
 | Storage 버킷 `office-history-assets` | **생성 대기** (Public 필수) |
 | 이미지 업로드 | **대기** |
 | `src/data/supabaseConfig.js` 채우기 | **대기** (url · anonKey) |
@@ -417,8 +415,7 @@ WebP 변환 + 썸네일 생성 + 매니페스트 status를 required → ready
 | 문서 | 내용 |
 |---|---|
 | `VISUAL_ASSET_REQUIREMENTS.md` | 필요한 이미지 28종 사양서 + 영문 프롬프트 |
-| `supabase/schema.sql` | 테이블 · RLS 정책 |
-| `supabase/seed.sql` | Asset 메타데이터 28건 (자동 생성) |
+| `supabase/setup.sql` | 테이블 · RLS 정책 · Asset 메타데이터 68건 (자동 생성) |
 
 ### 판단이 어려울 때
 
