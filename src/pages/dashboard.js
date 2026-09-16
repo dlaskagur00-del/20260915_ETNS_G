@@ -79,7 +79,7 @@ export function dashboardPage(state) {
 
   const recent = panel(
     {
-      title: "최근 공간 History",
+      title: "주요 공간 History",
       sub: "무엇이 · 언제 · 왜 바뀌었는가",
       flush: true,
       foot: el(

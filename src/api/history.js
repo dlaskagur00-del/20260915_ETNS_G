@@ -14,8 +14,30 @@ export function getChange(changeId) {
   return CHANGES.find((change) => change.id === changeId) || null;
 }
 
+/**
+ * 대시보드에 올릴 변경의 무게. 날짜만으로 고르면 가장 최근의 잔손질이
+ * 대표 사례가 됩니다 — 상판 보수나 타일 몇 장 교체가 첫 화면을 차지하면
+ * 이 기록이 무엇을 위한 것인지가 흐려집니다. 공간의 성격을 바꾼 변경을
+ * 먼저 올리고, 같은 무게 안에서 최신순으로 봅니다.
+ */
+const CHANGE_WEIGHT = {
+  expand: 3,
+  construct: 3,
+  install: 3,
+  relocate: 2,
+  replace: 2,
+  refurbish: 1,
+  repair: 0,
+};
+
 export function recentChanges(limit = 5) {
-  return [...CHANGES].sort((a, b) => (a.changedAt < b.changedAt ? 1 : -1)).slice(0, limit);
+  return [...CHANGES]
+    .sort((a, b) => {
+      const weight = (CHANGE_WEIGHT[b.changeType] ?? 1) - (CHANGE_WEIGHT[a.changeType] ?? 1);
+      if (weight !== 0) return weight;
+      return a.changedAt < b.changedAt ? 1 : -1;
+    })
+    .slice(0, limit);
 }
 
 /** 구성 요소 하나의 이력 — "이건 원래 무엇이었나"에 답합니다. */
