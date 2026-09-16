@@ -19,6 +19,36 @@ function heatColor(value) {
   return "var(--heat-1)";
 }
 
+/**
+ * 전체화면 확대.
+ *
+ * 발표 중 "이 부분 보세요" 하는 순간을 위한 것입니다. 1920 화면에서 1440px까지
+ * 커지는데 원본이 1536px이라 여전히 업스케일이 아닙니다. 핫스팟은 일부러 빼서
+ * 이미지 하나만 보이게 합니다 — 확대의 목적이 선택이 아니라 관찰이라서요.
+ */
+function openLightbox(entry) {
+  const img = el("img", { class: "lightbox__image", src: entry.url, alt: entry.alt || entry.name });
+  const overlay = el(
+    "div",
+    { class: "lightbox", role: "dialog", "aria-label": entry.name },
+    img,
+    el("div", { class: "lightbox__cap" }, entry.name),
+    el("button", { class: "lightbox__close", type: "button", "aria-label": "닫기" }, "✕")
+  );
+
+  const close = () => {
+    overlay.remove();
+    document.removeEventListener("keydown", onKey);
+  };
+  function onKey(event) {
+    if (event.key === "Escape") close();
+  }
+
+  overlay.addEventListener("click", close);
+  document.addEventListener("keydown", onKey);
+  document.body.append(overlay);
+}
+
 export function visualStage({
   assetId,
   hotspots = [],
@@ -89,9 +119,29 @@ export function visualStage({
     layer.append(button);
   }
 
-  img.style.maxHeight = `${maxHeight}px`;
+  // 이미지는 1536px인데 한때 645px로 줄여 쓰고 있었습니다. 폭이 먼저 차도록
+  // 세로 여유를 크게 주면, 같은 이미지가 패널 폭만큼 커집니다 — 원본을 넘지
+  // 않으므로 확대가 아니라 갖고 있던 픽셀을 꺼내 쓰는 것입니다.
+  // 세로는 vh로 묶어 작은 화면에서 화면 밖으로 밀려나지 않게 합니다.
+  img.style.maxHeight = `min(${maxHeight}px, 68vh)`;
   stage.append(img, layer);
-  return el("div", { class: "visual-stage-wrap" }, stage);
+
+  return el(
+    "div",
+    { class: "visual-stage-wrap" },
+    stage,
+    el(
+      "button",
+      {
+        class: "stage-zoom",
+        type: "button",
+        title: "전체화면으로 크게 보기",
+        "aria-label": "전체화면으로 크게 보기",
+        onClick: () => openLightbox(entry),
+      },
+      "⤢ 크게 보기"
+    )
+  );
 }
 
 /** 같은 공간을 두 이미지로 나란히 비교합니다. */

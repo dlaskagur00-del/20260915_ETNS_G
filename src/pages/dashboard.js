@@ -50,7 +50,7 @@ export function dashboardPage(state) {
         assetId: "office_isometric_main",
         hotspots: OFFICE_HOTSPOTS,
         selectedId: state.selectedSpaceId,
-        maxHeight: 430,
+        maxHeight: 780,
         onSelect: (spaceId) => {
           selectSpace(spaceId);
           navigate("configuration");
@@ -60,7 +60,7 @@ export function dashboardPage(state) {
           mode: "iso",
           spaces: listSpaces(),
           selectedId: state.selectedSpaceId,
-          maxHeight: 430,
+          maxHeight: 780,
           onSelect: (spaceId) => {
             selectSpace(spaceId);
             navigate("configuration");

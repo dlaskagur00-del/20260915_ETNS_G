@@ -62,7 +62,11 @@ MAX_WIDTH = {
 }
 
 THUMB_WIDTH = 480
-WEBP_QUALITY = 82
+
+# 발표 화면에서 확대해 보기 때문에 본 이미지는 높게 잡습니다. 썸네일은 작게
+# 표시되어 차이가 보이지 않으므로 낮게 유지해 용량을 아낍니다.
+WEBP_QUALITY = 92
+THUMB_QUALITY = 82
 SUPPORTED = {".png", ".jpg", ".jpeg", ".webp"}
 
 
@@ -104,7 +108,7 @@ def trim_whitespace(image: Image.Image, tolerance: int = 8) -> Image.Image:
     return image.crop((left, top, right, bottom))
 
 
-def to_webp(image: Image.Image, target: Path, width: int) -> tuple[int, int]:
+def to_webp(image: Image.Image, target: Path, width: int, quality: int = WEBP_QUALITY) -> tuple[int, int]:
     resized = image
     if image.width > width:
         height = round(image.height * width / image.width)
@@ -112,7 +116,7 @@ def to_webp(image: Image.Image, target: Path, width: int) -> tuple[int, int]:
 
     target.parent.mkdir(parents=True, exist_ok=True)
     rgb = resized.convert("RGB") if resized.mode in ("RGBA", "P", "LA") else resized
-    rgb.save(target, "WEBP", quality=WEBP_QUALITY, method=6)
+    rgb.save(target, "WEBP", quality=quality, method=6)
     return resized.width, resized.height
 
 
@@ -154,7 +158,7 @@ def process(check_only: bool = False) -> int:
 
             folder = ASSETS / FOLDER_BY_TYPE[entry["type"]]
             width, height = to_webp(image, folder / f"{asset_id}.webp", MAX_WIDTH.get(entry["type"], 1200))
-            to_webp(image, folder / f"{asset_id}_thumb.webp", THUMB_WIDTH)
+            to_webp(image, folder / f"{asset_id}_thumb.webp", THUMB_WIDTH, THUMB_QUALITY)
 
         entry["status"] = "ready"
         entry["width"] = width

@@ -155,7 +155,7 @@ export function configurationPage(state) {
             mode: "iso",
             spaces: sceneSpaces,
             selectedId: space ? space.id : null,
-            maxHeight: 470,
+            maxHeight: 780,
             onSelect: (spaceId) => selectSpace(spaceId),
             markers: [],
           })
@@ -168,20 +168,20 @@ export function configurationPage(state) {
               x: o.x, y: o.y, w: o.w, h: o.h,
             })),
             selectedId: state.selectedAssetId,
-            maxHeight: 430,
+            maxHeight: 780,
             onSelect: (assetId) => selectAsset(assetId),
           })
         : visualStage({
             assetId: "office_isometric_main",
             hotspots: OFFICE_HOTSPOTS,
             selectedId: space ? space.id : null,
-            maxHeight: 430,
+            maxHeight: 780,
             onSelect: (spaceId) => selectSpace(spaceId),
             fallback: spaceScene({
               mode: "iso",
               spaces: sceneSpaces,
               selectedId: space ? space.id : null,
-              maxHeight: 470,
+              maxHeight: 780,
               onSelect: (spaceId) => selectSpace(spaceId),
               markers: space ? assetMarkers(space, assets, state.selectedAssetId) : [],
               onMarkerSelect: (assetId) => selectAsset(assetId),
